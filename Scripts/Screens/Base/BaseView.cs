@@ -14,8 +14,16 @@
 
         private void Awake()
         {
-            this.viewRoot      ??= this.GetComponent<CanvasGroup>();
-            this.RectTransform ??= this.GetComponent<RectTransform>();
+            this.viewRoot = this.GetComponent<CanvasGroup>();
+            if (this.viewRoot is null)
+            {
+            }
+
+            if (this.RectTransform is null)
+            {
+                this.RectTransform = this.GetComponent<RectTransform>();
+            }
+            
             this.UpdateAlpha(0);
             this.IsReadyToUse = true;
         }

@@ -25,6 +25,8 @@ namespace UITemplate.Scripts.Interface
         public void HideView();
 
         public void DestroyView();
+
+        public void SetView(IScreenView viewInstance);
     }
 
     public interface IScreenPresenter<in TModel> : IScreenPresenter

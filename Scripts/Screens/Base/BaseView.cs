@@ -1,6 +1,5 @@
 ﻿namespace UITemplate.Scripts.Screens.Base
 {
-    using System;
     using Cysharp.Threading.Tasks;
     using UITemplate.Scripts.Interface;
     using UnityEngine;

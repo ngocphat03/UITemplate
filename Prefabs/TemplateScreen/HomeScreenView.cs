@@ -1,25 +1,27 @@
+
 namespace UITemplate.Prefabs.TemplateScreen
 {
+    using UITemplate.Scripts.Screens.Base;
     using Cysharp.Threading.Tasks;
     using UITemplate.Scripts.Extension;
-    using UITemplate.Scripts.Screens.Template;
     using UnityEngine;
 
-    public class LoadingScreenView : UITemplateLoadingScreenView
+    public class HomeScreenView : BaseView
     {
+        
     }
-
-    [ScreenInfo(nameof(LoadingScreenView))]
-    public class LoadingScreenPresenter : UITemplateLoadingScreenPresenter
+    [ScreenInfo(nameof(HomeScreenView))]
+    public class HomeScreenPresenter : BaseScreenPresenter<HomeScreenView>
     {
         protected override void OnViewReady()
         {
-            Debug.Log("onvsdvsv");
+            Debug.Log("On view ready");
+            base.OnViewReady();
         }
 
         public override UniTask BindData()
         {
-            Debug.Log("fdsjksdkfsdkhfsdjd");
+            Debug.Log("Bind data");
             return UniTask.CompletedTask;
         }
     }

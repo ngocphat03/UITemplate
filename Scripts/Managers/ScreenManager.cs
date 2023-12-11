@@ -1,6 +1,7 @@
 ﻿namespace UITemplate.Scripts.Managers
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
     using System.Collections.Generic;
     using UITemplate.Scripts.Extension;
@@ -21,10 +22,19 @@
 
     public class ScreenManager : Singleton<ScreenManager>, IScreenManager
     {
-        private IGameAssets gameAssets = new GameAssets();
+        [SerializeField] private Transform        screenOpen;
+        [SerializeField] private Transform        screenClose;
+        private                  IScreenPresenter activeScreens;
 
-        private Dictionary<Type, IScreenPresenter>       typeToLoadedScreenPresenter = new Dictionary<Type, IScreenPresenter>();
-        private Dictionary<Type, Task<IScreenPresenter>> typeToPendingScreen         = new Dictionary<Type, Task<IScreenPresenter>>();
+        private readonly IGameAssets                              gameAssets                  = new GameAssets();
+        private readonly Dictionary<Type, IScreenPresenter>       typeToLoadedScreenPresenter = new Dictionary<Type, IScreenPresenter>();
+        private readonly Dictionary<Type, Task<IScreenPresenter>> typeToPendingScreen         = new Dictionary<Type, Task<IScreenPresenter>>();
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+            
+        }
 
         public async UniTask<T> GetScreen<T>() where T : IScreenPresenter
         {
@@ -45,8 +55,11 @@
 
             async Task<IScreenPresenter> InstantiateScreen()
             {
-                var viewObject = Instantiate(await this.gameAssets.LoadAssetAsync<GameObject>(screenType.Name));
-                screenPresenter = viewObject.GetComponent<T>();
+                screenPresenter = Activator.CreateInstance<T>();
+                var screenInfo = screenPresenter.GetCustomAttribute<ScreenInfoAttribute>();
+                var viewObject = Instantiate(await this.gameAssets.LoadAssetAsync<GameObject>(screenInfo.AddressableScreenPath), this.screenOpen).GetComponent<IScreenView>();
+                screenPresenter.SetView(viewObject);
+                this.typeToLoadedScreenPresenter.Add(screenType, screenPresenter);
 
                 return (T)screenPresenter;
             }
@@ -58,6 +71,9 @@
 
             if (nextScreen != null)
             {
+                await this.CloseCurrentScreen();
+                nextScreen.SetViewParent(this.screenOpen);
+                this.activeScreens = nextScreen;
                 await nextScreen.OpenViewAsync();
 
                 return nextScreen;
@@ -70,8 +86,18 @@
             }
         }
 
-        public UniTask<TPresenter> OpenScreen<TPresenter, TModel>(TModel model) where TPresenter : IScreenPresenter<TModel> { throw new System.NotImplementedException(); }
+        public UniTask<TPresenter> OpenScreen<TPresenter, TModel>(TModel model) where TPresenter : IScreenPresenter<TModel>
+        {
+            Debug.LogError("Don't define this case :v");
 
-        public UniTask CloseCurrentScreen() { throw new System.NotImplementedException(); }
+            return new UniTask<TPresenter>();
+        }
+
+        public async UniTask CloseCurrentScreen()
+        {
+            if (this.activeScreens == null) return;
+            this.activeScreens.SetViewParent(this.screenClose);
+            await this.activeScreens.CloseViewAsync();
+        }
     }
 }

@@ -16,8 +16,15 @@ namespace UITemplate.Scripts.Screens.Base
         {
             this.View     = (TView)viewInstance;
             this.ScreenId = $"{SceneManager.GetActiveScene().name}/{typeof(TView).Name}";
-            await UniTask.WaitUntil(() => this.View.IsReadyToUse);
-            this.OnViewReady();
+            if (this.View.IsReadyToUse)
+            {
+                this.OnViewReady();
+            }
+            else
+            {
+                await UniTask.WaitUntil(() => this.View.IsReadyToUse);
+                this.OnViewReady();
+            }
         }
 
         protected virtual void OnViewReady() { }

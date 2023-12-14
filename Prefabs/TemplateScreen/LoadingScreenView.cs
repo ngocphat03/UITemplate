@@ -5,6 +5,7 @@ namespace UITemplate.Prefabs.TemplateScreen
     using UITemplate.Scripts.Screens.Template;
     using UnityEngine;
 
+    [ScreenPresenterAttribute(typeof(LoadingScreenPresenter))]
     public class LoadingScreenView : UITemplateLoadingScreenView
     {
     }

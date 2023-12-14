@@ -6,6 +6,7 @@ namespace UITemplate.Prefabs.TemplateScreen
     using UITemplate.Scripts.Extension;
     using UnityEngine;
 
+    [ScreenPresenter(typeof(HomeScreenPresenter))]
     public class HomeScreenView : BaseView
     {
         

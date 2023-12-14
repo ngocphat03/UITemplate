@@ -33,7 +33,15 @@
         protected override void OnAwake()
         {
             base.OnAwake();
-            
+            ResearchScreen();
+
+            void ResearchScreen()
+            {
+                if(this.screenOpen.childCount == 0) return;
+
+                var listScreenDefault = this.screenOpen.GetComponentsInChildren<IScreenView>().ToList();
+                listScreenDefault.ForEach(this.InitScreen);
+            }
         }
 
         public async UniTask<T> GetScreen<T>() where T : IScreenPresenter
@@ -98,6 +106,15 @@
             if (this.activeScreens == null) return;
             this.activeScreens.SetViewParent(this.screenClose);
             await this.activeScreens.CloseViewAsync();
+        }
+
+        private async void InitScreen(IScreenView screenView)
+        {
+            var screenPresenter = screenView.GetCustomAttribute<ScreenPresenterAttribute>().ScreenPresenter();
+            var typePresenter   = screenPresenter.GetType();
+            screenPresenter.SetView(screenView);
+            this.typeToLoadedScreenPresenter.Add(typePresenter, screenPresenter);
+            await screenPresenter.OpenViewAsync();
         }
     }
 }

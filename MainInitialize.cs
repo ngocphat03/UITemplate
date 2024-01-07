@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using UITemplate.Scripts.Extension.Base;
     using UITemplate.Scripts.Extension.ObjectPool;
+    using UITemplate.Scripts.Extension.Sound;
     using UnityEngine;
     using Object = UnityEngine.Object;
 
@@ -14,6 +15,7 @@
         {
             // add service
             this.listServiceHadCreate.Add(CreateService<ObjectPoolManager>());
+            this.listServiceHadCreate.Add(CreateService<SoundManager>());
             
             foreach (var monoService in this.listServiceHadCreate)
             {
@@ -28,7 +30,5 @@
                 return newService.GetComponent<T>() as MonoService;
             }
         }
-
-        
     }
 }

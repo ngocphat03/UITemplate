@@ -10,7 +10,7 @@
     public class SoundManager : MonoService
     {
         public           List<AudioSource> listAudio        = new List<AudioSource>();
-        private readonly IGameAssets       gameAssets       = new GameAssets();
+        private readonly IGameAssets       gameAssets       = ObjectFactoryExtension.GetService<GameAssets>();
         private const    int               CountAudioCreate = 4;
         public static    SoundManager      Instance;
         private          AudioSource       rootAudioSource;
@@ -18,6 +18,8 @@
         public override UniTask Init()
         {
             Instance = this;
+            Debug.LogError("Con cac");
+
             CreateAudioPool();
 
             return base.Init();

@@ -11,13 +11,12 @@
 
     public sealed class ObjectPoolManager : MonoService
     {
-        private IGameAssets gameAssets;
+        private readonly IGameAssets gameAssets = ObjectFactoryExtension.GetService<GameAssets>();
 
         public override UniTask Init()
         {
             Instance        = this;
-            this.gameAssets = new GameAssets();
-
+            Debug.LogError("Con cac");
             return UniTask.CompletedTask;
         }
 

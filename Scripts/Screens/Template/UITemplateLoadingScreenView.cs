@@ -1,8 +1,10 @@
 namespace UITemplate.Scripts.Screens.Template
 {
+    using System.Threading.Tasks;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using UITemplate.Scripts.Extension;
+    using UITemplate.Scripts.Extension.ObjectPool;
     using UITemplate.Scripts.Screens.Base;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
@@ -43,11 +45,12 @@ namespace UITemplate.Scripts.Screens.Template
     [ScreenInfo(nameof(UITemplateLoadingScreenView))]
     public class UITemplateLoadingScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLoadingScreenView>
     {
-        protected readonly IGameAssets GameAssets = new GameAssets();
-        protected virtual  string      NextSceneName => "1.MainScene";
+        protected IGameAssets          GameAssets;
+        private   float                loadingProgress;
+        private   int                  loadingSteps;
+        private   GameObject           objectPoolContainer;
 
-        private float loadingProgress;
-        private int   loadingSteps;
+        protected virtual string NextSceneName => "1.MainScene";
 
         private float LoadingProgress
         {
@@ -59,10 +62,9 @@ namespace UITemplate.Scripts.Screens.Template
             }
         }
 
-        private GameObject objectPoolContainer;
-
         protected override void OnViewReady()
         {
+            this.GameAssets = ObjectFactoryExtension.GetService<GameAssets>();
             base.OnViewReady();
             this.OpenViewAsync().Forget();
         }
@@ -85,10 +87,7 @@ namespace UITemplate.Scripts.Screens.Template
             await UniTask.CompletedTask;
         }
 
-        protected virtual async UniTask LoadNextScene()
-        {
-            await SceneManager.LoadSceneAsync(this.NextSceneName);
-        }
+        protected virtual async UniTask LoadNextScene() { await SceneManager.LoadSceneAsync(this.NextSceneName); }
 
         protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.GameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false); }
 
@@ -116,8 +115,8 @@ namespace UITemplate.Scripts.Screens.Template
 
         protected virtual UniTask CreateObjectPool(string prefabName, int initialPoolSize = 1)
         {
-            // return this.TrackProgress(
-            //     this.objectPoolManager.CreatePool(prefabName, initialPoolSize, this.objectPoolContainer));
+            return this.TrackProgress(
+                ObjectPoolManager.Instance.CreatePool(prefabName, initialPoolSize, this.objectPoolContainer));
             return UniTask.CompletedTask;
         }
 

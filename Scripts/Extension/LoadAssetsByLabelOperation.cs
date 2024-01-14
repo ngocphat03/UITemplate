@@ -7,24 +7,23 @@
     using UnityEngine.AddressableAssets.ResourceLocators;
     using UnityEngine.ResourceManagement.AsyncOperations;
     using Object = UnityEngine.Object;
-
-    //Special thanks to TextusGames for their forum post: https://forum.unity.com/threads/how-to-get-asset-and-its-guid-from-known-lable.756560/
+    
     public class LoadAssetsByLabelOperation : AsyncOperationBase<List<AsyncOperationHandle<Object>>>
     {
-        string _label;
-        Dictionary<object, AsyncOperationHandle> _loadedDictionary;
-        Dictionary<object, AsyncOperationHandle> _loadingDictionary;
+        private readonly string label;
+        private readonly Dictionary<object, AsyncOperationHandle> loadedDictionary;
+        private readonly Dictionary<object, AsyncOperationHandle> loadingDictionary;
 
         public LoadAssetsByLabelOperation(Dictionary<object, AsyncOperationHandle> loadedDictionary, Dictionary<object, AsyncOperationHandle> loadingDictionary,
             string label)
         {
-            this._loadedDictionary = loadedDictionary;
-            if (this._loadedDictionary == null)
-                this._loadedDictionary = new Dictionary<object, AsyncOperationHandle>();
-            this._loadingDictionary = loadingDictionary;
-            if (this._loadingDictionary == null)
-                this._loadingDictionary = new Dictionary<object, AsyncOperationHandle>();
-            this._label = label;
+            this.loadedDictionary = loadedDictionary;
+            if (this.loadedDictionary == null)
+                this.loadedDictionary = new Dictionary<object, AsyncOperationHandle>();
+            this.loadingDictionary = loadingDictionary;
+            if (this.loadingDictionary == null)
+                this.loadingDictionary = new Dictionary<object, AsyncOperationHandle>();
+            this.label = label;
         }
 
         protected override void Execute()
@@ -36,7 +35,7 @@
 
         public async UniTask DoTask()
         {
-            var locationsHandle = Addressables.LoadResourceLocationsAsync(this._label);
+            var locationsHandle = Addressables.LoadResourceLocationsAsync(this.label);
             var locations       = await locationsHandle.Task;
 
             var loadingInternalIdDic = new Dictionary<string, AsyncOperationHandle<Object>>();
@@ -74,8 +73,8 @@
                     if (!locationMatched)
                         continue;
 
-                    if (!this._loadingDictionary.ContainsKey(key))
-                        this._loadingDictionary.Add(key, loadingHandle);
+                    if (!this.loadingDictionary.ContainsKey(key))
+                        this.loadingDictionary.Add(key, loadingHandle);
                 }
             }
 
@@ -97,11 +96,11 @@
                     if (!locationMatched)
                         continue;
 
-                    if (this._loadingDictionary.ContainsKey(key))
-                        this._loadingDictionary.Remove(key);
-                    if (!this._loadedDictionary.ContainsKey(key))
+                    if (this.loadingDictionary.ContainsKey(key))
+                        this.loadingDictionary.Remove(key);
+                    if (!this.loadedDictionary.ContainsKey(key))
                     {
-                        this._loadedDictionary.Add(key, loadedHandle);
+                        this.loadedDictionary.Add(key, loadedHandle);
                     }
                 }
             }

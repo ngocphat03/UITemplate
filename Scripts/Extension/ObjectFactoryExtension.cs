@@ -9,6 +9,8 @@ namespace UITemplate.Scripts.Extension
     {
         private static readonly Dictionary<Type, object> ObjectDictionary = new Dictionary<Type, object>();
 
+        #region Default class
+
         public static void GetService<T>(ref T obj) where T : class, new()
         {
             var objectType = typeof(T);
@@ -25,7 +27,7 @@ namespace UITemplate.Scripts.Extension
                 obj = newObject;
             }
         }
-        
+
         /// <summary>
         /// Can using with interface
         /// </summary>
@@ -44,9 +46,10 @@ namespace UITemplate.Scripts.Extension
                 var newObject = new T();
                 ObjectDictionary[objectType] = newObject;
 
-                return  newObject;
+                return newObject;
             }
         }
+
         public static T GetService<T>(this T obj) where T : class, new()
         {
             var objectType = typeof(T);
@@ -59,11 +62,15 @@ namespace UITemplate.Scripts.Extension
             {
                 var newObject = new T();
                 ObjectDictionary[objectType] = newObject;
-                
+
                 return newObject;
             }
         }
-        
+
+        #endregion
+
+        #region MonoService
+
         public static void GetMonoService<T>(ref T obj) where T : MonoService, new()
         {
             var objectType = typeof(T);
@@ -75,13 +82,13 @@ namespace UITemplate.Scripts.Extension
             else
             {
                 var newObject = new GameObject(objectType.Name).AddComponent<T>();
-                ObjectDictionary[objectType]  = newObject;
+                ObjectDictionary[objectType] = newObject;
                 newObject.Init();
 
                 obj = newObject;
             }
         }
-        
+
         public static T GetMonoService<T>() where T : MonoService, new()
         {
             var objectType = typeof(T);
@@ -96,8 +103,85 @@ namespace UITemplate.Scripts.Extension
                 ObjectDictionary[objectType] = newObject;
                 newObject.Init();
 
-                return  newObject;
+                return newObject;
             }
         }
+
+        public static T GetMonoService<T>(this T obj) where T : MonoService, new()
+        {
+            var objectType = typeof(T);
+
+            if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
+            {
+                return (T)existingObject;
+            }
+            else
+            {
+                var newObject = new GameObject(objectType.Name).AddComponent<T>();
+                ObjectDictionary[objectType] = newObject;
+
+                return newObject;
+            }
+        }
+
+        #endregion
+
+        #region IService
+
+        public static T GetIService<T>() where T : IService, new()
+        {
+            var objectType = typeof(T);
+
+            if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
+            {
+                return (T)existingObject;
+            }
+            else
+            {
+                var newObject = new T();
+                ObjectDictionary[objectType] = newObject;
+                newObject.Init();
+
+                return newObject;
+            }
+        }
+
+        public static void GetIService<T>(ref T obj) where T : IService, new()
+        {
+            var objectType = typeof(T);
+
+            if (ObjectDictionary.TryGetValue(objectType, out var existingObject) && existingObject is T typedObject)
+            {
+                obj = typedObject;
+            }
+            else
+            {
+                var newObject = new T();
+                ObjectDictionary[objectType] = newObject;
+                newObject.Init();
+
+                obj = newObject;
+            }
+        }
+
+        public static T GetIService<T>(this T obj) where T : IService, new()
+        {
+            var objectType = typeof(T);
+
+            if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
+            {
+                return (T)existingObject;
+            }
+            else
+            {
+                var newObject = new T();
+                ObjectDictionary[objectType] = newObject;
+                newObject.Init();
+
+                return newObject;
+            }
+        }
+
+        #endregion
     }
 }

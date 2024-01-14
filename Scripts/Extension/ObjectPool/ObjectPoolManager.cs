@@ -16,7 +16,6 @@
         public override UniTask Init()
         {
             Instance        = this;
-            Debug.LogError("Con cac");
             return UniTask.CompletedTask;
         }
 

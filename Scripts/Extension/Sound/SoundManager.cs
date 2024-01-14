@@ -18,8 +18,6 @@
         public override UniTask Init()
         {
             Instance = this;
-            Debug.LogError("Con cac");
-
             CreateAudioPool();
 
             return base.Init();
@@ -36,13 +34,14 @@
 
         public void PlaySound(string nameSound)
         {
-            var audioClip   = this.gameAssets.LoadAssetAsync<AudioClip>(nameSound).WaitForCompletion();
-            this.StartCoroutine( SetAndPlayAudio(this.rootAudioSource.Spawn()));
+            var audioClip = this.gameAssets.LoadAssetAsync<AudioClip>(nameSound).WaitForCompletion();
+            this.StartCoroutine(SetAndPlayAudio(this.rootAudioSource.Spawn()));
 
             IEnumerator SetAndPlayAudio(AudioSource audi)
             {
                 audi.clip = audioClip;
                 audi.Play();
+
                 yield return new WaitForSeconds(audi.clip.length);
                 audi.Recycle();
             }

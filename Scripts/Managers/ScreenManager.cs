@@ -7,6 +7,7 @@
     using UITemplate.Scripts.Extension;
     using UITemplate.Scripts.Interface;
     using Cysharp.Threading.Tasks;
+    using UITemplate.Scripts.Screens.Base;
     using UnityEngine;
 
     public interface IScreenManager
@@ -26,7 +27,7 @@
         [SerializeField] private Transform        screenClose;
         private                  IScreenPresenter activeScreens;
 
-        private readonly IGameAssets                              gameAssets                  = new GameAssets();
+        private readonly IGameAssets                              gameAssets                  = ObjectFactoryExtension.GetService<GameAssets>();
         private readonly Dictionary<Type, IScreenPresenter>       typeToLoadedScreenPresenter = new Dictionary<Type, IScreenPresenter>();
         private readonly Dictionary<Type, Task<IScreenPresenter>> typeToPendingScreen         = new Dictionary<Type, Task<IScreenPresenter>>();
 
@@ -66,7 +67,8 @@
                 screenPresenter = Activator.CreateInstance<T>();
                 var screenInfo = screenPresenter.GetCustomAttribute<ScreenInfoAttribute>();
                 var viewObject = Instantiate(await this.gameAssets.LoadAssetAsync<GameObject>(screenInfo.AddressableScreenPath), this.screenOpen).GetComponent<IScreenView>();
-                screenPresenter.SetView(viewObject);
+                
+                screenPresenter.SetView(viewObject, this.CloseScreen);
                 this.typeToLoadedScreenPresenter.Add(screenType, screenPresenter);
 
                 return (T)screenPresenter;
@@ -79,9 +81,12 @@
 
             if (nextScreen != null)
             {
-                await this.CloseCurrentScreen();
+                if (nextScreen.GetCustomAttribute<PopupInfoAttribute>() is null || !nextScreen.GetCustomAttribute<PopupInfoAttribute>().IsOverlay)
+                {
+                    await this.CloseCurrentScreen();
+                    this.activeScreens = nextScreen;
+                }
                 nextScreen.SetViewParent(this.screenOpen);
-                this.activeScreens = nextScreen;
                 await nextScreen.OpenViewAsync();
 
                 return nextScreen;
@@ -103,16 +108,20 @@
 
         public async UniTask CloseCurrentScreen()
         {
-            if (this.activeScreens == null) return;
-            this.activeScreens.SetViewParent(this.screenClose);
+            if(this.activeScreens is null) return;
             await this.activeScreens.CloseViewAsync();
+        }
+
+        private void CloseScreen(IScreenPresenter screenPresenter)
+        {
+            screenPresenter.SetViewParent(this.screenClose);
         }
 
         private async void InitScreen(IScreenView screenView)
         {
             var screenPresenter = screenView.GetCustomAttribute<ScreenPresenterAttribute>().ScreenPresenter();
             var typePresenter   = screenPresenter.GetType();
-            screenPresenter.SetView(screenView);
+            screenPresenter.SetView(screenView, this.CloseScreen);
             this.typeToLoadedScreenPresenter.Add(typePresenter, screenPresenter);
             await screenPresenter.OpenViewAsync();
         }

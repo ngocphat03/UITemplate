@@ -1,12 +1,14 @@
 namespace UITemplate.Scripts.Interface
 {
+    using System;
     using Cysharp.Threading.Tasks;
     using UnityEngine;
 
     public interface IScreenPresenter
     {
-        public string       ScreenId     { get; }
-        public ScreenStatus ScreenStatus { get; }
+        public string                   ScreenId     { get; }
+        public ScreenStatus             ScreenStatus { get; }
+        public Action<IScreenPresenter> OnCloseView  { get; set; }
 
         public void SetViewParent(Transform parent);
 
@@ -26,7 +28,7 @@ namespace UITemplate.Scripts.Interface
 
         public void DestroyView();
 
-        public void SetView(IScreenView viewInstance);
+        public void SetView(IScreenView viewInstance, Action<IScreenPresenter> onClose = null);
     }
 
     public interface IScreenPresenter<in TModel> : IScreenPresenter

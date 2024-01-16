@@ -1,187 +1,184 @@
-namespace UITemplate.Scripts.Extension
+using System;
+using System.Collections.Generic;
+using UITemplate.Scripts.Extension.Base;
+using UnityEngine;
+
+public static class ObjectFactoryExtension
 {
-    using System;
-    using System.Collections.Generic;
-    using UITemplate.Scripts.Extension.Base;
-    using UnityEngine;
+    private static readonly Dictionary<Type, object> ObjectDictionary = new Dictionary<Type, object>();
 
-    public static class ObjectFactoryExtension
+    #region Default class
+
+    public static void GetService<T>(ref T obj) where T : class, new()
     {
-        private static readonly Dictionary<Type, object> ObjectDictionary = new Dictionary<Type, object>();
+        var objectType = typeof(T);
 
-        #region Default class
-
-        public static void GetService<T>(ref T obj) where T : class, new()
+        if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
         {
-            var objectType = typeof(T);
-
-            if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
-            {
-                obj = (T)existingObject;
-            }
-            else
-            {
-                var newObject = new T();
-                ObjectDictionary[objectType] = newObject;
-
-                obj = newObject;
-            }
+            obj = (T)existingObject;
         }
-
-        /// <summary>
-        /// Can using with interface
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static T GetService<T>() where T : class, new()
+        else
         {
-            var objectType = typeof(T);
+            var newObject = new T();
+            ObjectDictionary[objectType] = newObject;
 
-            if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
-            {
-                return (T)existingObject;
-            }
-            else
-            {
-                var newObject = new T();
-                ObjectDictionary[objectType] = newObject;
-
-                return newObject;
-            }
+            obj = newObject;
         }
-
-        public static T GetService<T>(this T obj) where T : class, new()
-        {
-            var objectType = typeof(T);
-
-            if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
-            {
-                return (T)existingObject;
-            }
-            else
-            {
-                var newObject = new T();
-                ObjectDictionary[objectType] = newObject;
-
-                return newObject;
-            }
-        }
-
-        #endregion
-
-        #region MonoService
-
-        public static void GetMonoService<T>(ref T obj) where T : MonoService, new()
-        {
-            var objectType = typeof(T);
-
-            if (ObjectDictionary.TryGetValue(objectType, out var existingObject) && existingObject is T typedObject)
-            {
-                obj = typedObject;
-            }
-            else
-            {
-                var newObject = new GameObject(objectType.Name).AddComponent<T>();
-                ObjectDictionary[objectType] = newObject;
-                newObject.Init();
-
-                obj = newObject;
-            }
-        }
-
-        public static T GetMonoService<T>() where T : MonoService, new()
-        {
-            var objectType = typeof(T);
-
-            if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
-            {
-                return (T)existingObject;
-            }
-            else
-            {
-                var newObject = new GameObject(objectType.Name).AddComponent<T>();
-                ObjectDictionary[objectType] = newObject;
-                newObject.Init();
-
-                return newObject;
-            }
-        }
-
-        public static T GetMonoService<T>(this T obj) where T : MonoService, new()
-        {
-            var objectType = typeof(T);
-
-            if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
-            {
-                return (T)existingObject;
-            }
-            else
-            {
-                var newObject = new GameObject(objectType.Name).AddComponent<T>();
-                ObjectDictionary[objectType] = newObject;
-
-                return newObject;
-            }
-        }
-
-        #endregion
-
-        #region IService
-
-        public static T GetIService<T>() where T : IService, new()
-        {
-            var objectType = typeof(T);
-
-            if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
-            {
-                return (T)existingObject;
-            }
-            else
-            {
-                var newObject = new T();
-                ObjectDictionary[objectType] = newObject;
-                newObject.Init();
-
-                return newObject;
-            }
-        }
-
-        public static void GetIService<T>(ref T obj) where T : IService, new()
-        {
-            var objectType = typeof(T);
-
-            if (ObjectDictionary.TryGetValue(objectType, out var existingObject) && existingObject is T typedObject)
-            {
-                obj = typedObject;
-            }
-            else
-            {
-                var newObject = new T();
-                ObjectDictionary[objectType] = newObject;
-                newObject.Init();
-
-                obj = newObject;
-            }
-        }
-
-        public static T GetIService<T>(this T obj) where T : IService, new()
-        {
-            var objectType = typeof(T);
-
-            if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
-            {
-                return (T)existingObject;
-            }
-            else
-            {
-                var newObject = new T();
-                ObjectDictionary[objectType] = newObject;
-                newObject.Init();
-
-                return newObject;
-            }
-        }
-
-        #endregion
     }
+
+    /// <summary>
+    /// Can using with interface
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static T GetService<T>() where T : class, new()
+    {
+        var objectType = typeof(T);
+
+        if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
+        {
+            return (T)existingObject;
+        }
+        else
+        {
+            var newObject = new T();
+            ObjectDictionary[objectType] = newObject;
+
+            return newObject;
+        }
+    }
+
+    public static T GetService<T>(this T obj) where T : class, new()
+    {
+        var objectType = typeof(T);
+
+        if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
+        {
+            return (T)existingObject;
+        }
+        else
+        {
+            var newObject = new T();
+            ObjectDictionary[objectType] = newObject;
+
+            return newObject;
+        }
+    }
+
+    #endregion
+
+    #region MonoService
+
+    public static void GetMonoService<T>(ref T obj) where T : MonoService, new()
+    {
+        var objectType = typeof(T);
+
+        if (ObjectDictionary.TryGetValue(objectType, out var existingObject) && existingObject is T typedObject)
+        {
+            obj = typedObject;
+        }
+        else
+        {
+            var newObject = new GameObject(objectType.Name).AddComponent<T>();
+            ObjectDictionary[objectType] = newObject;
+            newObject.Init();
+
+            obj = newObject;
+        }
+    }
+
+    public static T GetMonoService<T>() where T : MonoService, new()
+    {
+        var objectType = typeof(T);
+
+        if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
+        {
+            return (T)existingObject;
+        }
+        else
+        {
+            var newObject = new GameObject(objectType.Name).AddComponent<T>();
+            ObjectDictionary[objectType] = newObject;
+            newObject.Init();
+
+            return newObject;
+        }
+    }
+
+    public static T GetMonoService<T>(this T obj) where T : MonoService, new()
+    {
+        var objectType = typeof(T);
+
+        if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
+        {
+            return (T)existingObject;
+        }
+        else
+        {
+            var newObject = new GameObject(objectType.Name).AddComponent<T>();
+            ObjectDictionary[objectType] = newObject;
+
+            return newObject;
+        }
+    }
+
+    #endregion
+
+    #region IService
+
+    public static T GetIService<T>() where T : IService, new()
+    {
+        var objectType = typeof(T);
+
+        if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
+        {
+            return (T)existingObject;
+        }
+        else
+        {
+            var newObject = new T();
+            ObjectDictionary[objectType] = newObject;
+            newObject.Init();
+
+            return newObject;
+        }
+    }
+
+    public static void GetIService<T>(ref T obj) where T : IService, new()
+    {
+        var objectType = typeof(T);
+
+        if (ObjectDictionary.TryGetValue(objectType, out var existingObject) && existingObject is T typedObject)
+        {
+            obj = typedObject;
+        }
+        else
+        {
+            var newObject = new T();
+            ObjectDictionary[objectType] = newObject;
+            newObject.Init();
+
+            obj = newObject;
+        }
+    }
+
+    public static T GetIService<T>(this T obj) where T : IService, new()
+    {
+        var objectType = typeof(T);
+
+        if (ObjectDictionary.TryGetValue(objectType, out var existingObject))
+        {
+            return (T)existingObject;
+        }
+        else
+        {
+            var newObject = new T();
+            ObjectDictionary[objectType] = newObject;
+            newObject.Init();
+
+            return newObject;
+        }
+    }
+
+    #endregion
 }

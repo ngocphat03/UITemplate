@@ -1,6 +1,5 @@
 namespace UITemplate.Scripts.Screens.Template
 {
-    using System.Threading.Tasks;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using UITemplate.Scripts.Extension;
@@ -87,7 +86,10 @@ namespace UITemplate.Scripts.Screens.Template
             await UniTask.CompletedTask;
         }
 
-        protected virtual async UniTask LoadNextScene() { await SceneManager.LoadSceneAsync(this.NextSceneName); }
+        protected virtual async UniTask LoadNextScene()
+        {
+            // await SceneManager.LoadSceneAsync(this.NextSceneName);
+        }
 
         protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.GameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false); }
 

@@ -1,6 +1,7 @@
 ﻿namespace UITemplate
 {
     using System.Collections.Generic;
+    using UITemplate.Photon.Scripts;
     using UITemplate.Scripts.Extension;
     using UITemplate.Scripts.Extension.Base;
     using UITemplate.Scripts.Extension.ObjectPool;
@@ -17,7 +18,7 @@
         {
             this.listServiceHadCreate.Add(ObjectFactoryExtension.GetMonoService<ObjectPoolManager>());
             this.listServiceHadCreate.Add(ObjectFactoryExtension.GetMonoService<SoundManager>());
-            
+            this.listServiceHadCreate.Add(ObjectFactoryExtension.GetMonoService<UITemplatePhotonService>());
         }
     }
 }

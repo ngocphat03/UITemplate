@@ -1,6 +1,6 @@
 ﻿namespace UITemplate.Scripts.Extension.ObjectPool
 {
-    using Newtonsoft.Json;
+    // using Newtonsoft.Json;
     using UnityEngine;
 
     //<summary>
@@ -8,7 +8,7 @@
     //</summary>
     public static class ExtensionMethod
     {
-        public static string ToJson<T>(this T obj) { return JsonConvert.SerializeObject(obj); }
+        // public static string ToJson<T>(this T obj) { return JsonConvert.SerializeObject(obj); }
 
         public static string GetPath(this Transform current)
         {

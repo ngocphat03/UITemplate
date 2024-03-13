@@ -15,13 +15,12 @@ namespace UITemplate.Prefabs.TemplateScreen
     {
         protected override void OnViewReady()
         {
-            Debug.Log("onvsdvsv");
+            base.OnViewReady();
         }
 
         public override UniTask BindData()
         {
-            Debug.Log("fdsjksdkfsdkhfsdjd");
-            return UniTask.CompletedTask;
+            return base.BindData();
         }
     }
 }

@@ -88,7 +88,7 @@ namespace UITemplate.Scripts.Screens.Template
 
         protected virtual async UniTask LoadNextScene()
         {
-            // await SceneManager.LoadSceneAsync(this.NextSceneName);
+            await SceneManager.LoadSceneAsync(this.NextSceneName);
         }
 
         protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.GameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false); }

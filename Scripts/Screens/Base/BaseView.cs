@@ -49,6 +49,7 @@
 
         private void UpdateAlpha(float value)
         {
+            if(this.viewRoot == null) return;   
             this.ViewRoot.alpha          = value;
             this.ViewRoot.blocksRaycasts = value >= 1;
         }

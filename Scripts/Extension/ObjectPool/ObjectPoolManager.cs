@@ -11,13 +11,7 @@
 
     public sealed class ObjectPoolManager : MonoService
     {
-        private readonly IGameAssets gameAssets = ObjectFactoryExtension.GetService<GameAssets>();
-
-        public override UniTask Init()
-        {
-            Instance        = this;
-            return UniTask.CompletedTask;
-        }
+        private readonly IGameAssets gameAssets;
 
         public static    ObjectPoolManager Instance { get; private set; }
 
@@ -29,6 +23,12 @@
         private readonly Dictionary<GameObject, string> mapPrefabToKey     = new Dictionary<GameObject, string>();
 
         private GameObject defaultRoot;
+        
+        public ObjectPoolManager(IGameAssets gameAssets)
+        {
+            this.gameAssets  = gameAssets;
+            Instance         = this;
+        }
 
         #region Pool
 

@@ -16,9 +16,6 @@
         
         private void Awake()
         {
-            this.listServiceHadCreate.Add(ObjectFactoryExtension.GetMonoService<ObjectPoolManager>());
-            this.listServiceHadCreate.Add(ObjectFactoryExtension.GetMonoService<SoundManager>());
-            this.listServiceHadCreate.Add(ObjectFactoryExtension.GetMonoService<UITemplatePhotonService>());
         }
     }
 }

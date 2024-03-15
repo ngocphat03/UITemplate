@@ -7,8 +7,8 @@
     using UITemplate.Scripts.Extension;
     using UITemplate.Scripts.Interface;
     using Cysharp.Threading.Tasks;
-    using UITemplate.Scripts.Screens.Base;
     using UnityEngine;
+    using Zenject;
 
     public interface IScreenManager
     {
@@ -21,19 +21,24 @@
         public UniTask CloseCurrentScreen();
     }
 
-    public class ScreenManager : Singleton<ScreenManager>, IScreenManager
+    public class ScreenManager : MonoBehaviour, IScreenManager, IDisposable
     {
         [SerializeField] private Transform        screenOpen;
         [SerializeField] private Transform        screenClose;
         private                  IScreenPresenter activeScreens;
 
-        private readonly IGameAssets                              gameAssets                  = ObjectFactoryExtension.GetService<GameAssets>();
+        private          IGameAssets                              gameAssets               ;
         private readonly Dictionary<Type, IScreenPresenter>       typeToLoadedScreenPresenter = new Dictionary<Type, IScreenPresenter>();
         private readonly Dictionary<Type, Task<IScreenPresenter>> typeToPendingScreen         = new Dictionary<Type, Task<IScreenPresenter>>();
 
-        protected override void OnAwake()
+        [Inject]
+        public void Init(IGameAssets gameAsset)
         {
-            base.OnAwake();
+            this.gameAssets = gameAsset;
+        }
+        
+        protected void Awake()
+        {
             ResearchScreen();
 
             void ResearchScreen()
@@ -64,11 +69,11 @@
 
             async Task<IScreenPresenter> InstantiateScreen()
             {
-                screenPresenter = Activator.CreateInstance<T>();
+                screenPresenter = this.GetCurrentContainer().Instantiate<T>();
                 var screenInfo = screenPresenter.GetCustomAttribute<ScreenInfoAttribute>();
-                var viewObject = Instantiate(await this.gameAssets.LoadAssetAsync<GameObject>(screenInfo.AddressableScreenPath), this.screenOpen).GetComponent<IScreenView>();
-                
-                screenPresenter.SetView(viewObject, this.CloseScreen);
+                var viewObject = Instantiate(await this.gameAssets.LoadAssetAsync<GameObject>(screenInfo.AddressableScreenPath)).GetComponent<IScreenView>();
+
+                screenPresenter.SetView(viewObject);
                 this.typeToLoadedScreenPresenter.Add(screenType, screenPresenter);
 
                 return (T)screenPresenter;
@@ -125,5 +130,7 @@
             this.typeToLoadedScreenPresenter.Add(typePresenter, screenPresenter);
             await screenPresenter.OpenViewAsync();
         }
+
+        public void Dispose() {  }
     }
 }

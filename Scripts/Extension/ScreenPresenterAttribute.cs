@@ -3,6 +3,7 @@
     using System;
     using UnityEngine;
     using UITemplate.Scripts.Interface;
+    using Zenject;
 
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class ScreenPresenterAttribute : Attribute
@@ -27,7 +28,7 @@
                 return null;
             } 
             
-            var screenPresenterInstance = Activator.CreateInstance(this.ScreenPresenterType);
+            var screenPresenterInstance = this.GetCurrentContainer().Instantiate(this.ScreenPresenterType);
             return (IScreenPresenter)screenPresenterInstance;
         }
     }

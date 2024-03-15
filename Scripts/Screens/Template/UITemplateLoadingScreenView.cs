@@ -119,7 +119,6 @@ namespace UITemplate.Scripts.Screens.Template
         {
             return this.TrackProgress(
                 ObjectPoolManager.Instance.CreatePool(prefabName, initialPoolSize, this.objectPoolContainer));
-            return UniTask.CompletedTask;
         }
 
         protected virtual UniTask TrackProgress(UniTask task)

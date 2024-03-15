@@ -27,8 +27,9 @@
             this.View.hehe = this.CloseView;
         }
 
-        public override async UniTask BindData()
+        public override UniTask BindData()
         {
+            return UniTask.CompletedTask;
         }
     }
 }

@@ -9,7 +9,7 @@
     using UnityEngine;
     using Object = UnityEngine.Object;
 
-    public sealed class ObjectPoolManager : MonoService
+    public sealed class ObjectPoolManager
     {
         private readonly IGameAssets gameAssets;
 

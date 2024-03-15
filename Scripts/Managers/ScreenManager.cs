@@ -27,7 +27,7 @@
         [SerializeField] private Transform        screenClose;
         private                  IScreenPresenter activeScreens;
 
-        private          IGameAssets                              gameAssets               ;
+        private          IGameAssets                              gameAssets;
         private readonly Dictionary<Type, IScreenPresenter>       typeToLoadedScreenPresenter = new Dictionary<Type, IScreenPresenter>();
         private readonly Dictionary<Type, Task<IScreenPresenter>> typeToPendingScreen         = new Dictionary<Type, Task<IScreenPresenter>>();
 
@@ -35,19 +35,15 @@
         public void Init(IGameAssets gameAsset)
         {
             this.gameAssets = gameAsset;
+            this.ResearchScreen();
         }
-        
-        protected void Awake()
+
+        public void ResearchScreen()
         {
-            ResearchScreen();
+            if (this.screenOpen.childCount == 0) return;
 
-            void ResearchScreen()
-            {
-                if(this.screenOpen.childCount == 0) return;
-
-                var listScreenDefault = this.screenOpen.GetComponentsInChildren<IScreenView>().ToList();
-                listScreenDefault.ForEach(this.InitScreen);
-            }
+            var listScreenDefault = this.screenOpen.GetComponentsInChildren<IScreenView>().ToList();
+            listScreenDefault.ForEach(this.InitScreen);
         }
 
         public async UniTask<T> GetScreen<T>() where T : IScreenPresenter
@@ -91,6 +87,7 @@
                     await this.CloseCurrentScreen();
                     this.activeScreens = nextScreen;
                 }
+
                 nextScreen.SetViewParent(this.screenOpen);
                 await nextScreen.OpenViewAsync();
 
@@ -113,14 +110,11 @@
 
         public async UniTask CloseCurrentScreen()
         {
-            if(this.activeScreens is null) return;
+            if (this.activeScreens is null) return;
             await this.activeScreens.CloseViewAsync();
         }
 
-        private void CloseScreen(IScreenPresenter screenPresenter)
-        {
-            screenPresenter.SetViewParent(this.screenClose);
-        }
+        private void CloseScreen(IScreenPresenter screenPresenter) { screenPresenter.SetViewParent(this.screenClose); }
 
         private async void InitScreen(IScreenView screenView)
         {
@@ -131,6 +125,6 @@
             await screenPresenter.OpenViewAsync();
         }
 
-        public void Dispose() {  }
+        public void Dispose() { }
     }
 }

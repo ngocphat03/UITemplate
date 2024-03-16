@@ -101,11 +101,24 @@
             }
         }
 
-        public UniTask<TPresenter> OpenScreen<TPresenter, TModel>(TModel model) where TPresenter : IScreenPresenter<TModel>
+        public async UniTask<TPresenter> OpenScreen<TPresenter, TModel>(TModel model) where TPresenter : IScreenPresenter<TModel>
         {
-            Debug.LogError("Don't define this case :v");
+            var nextScreen = (await this.GetScreen<TPresenter>());
 
-            return new UniTask<TPresenter>();
+            if (nextScreen != null)
+            {
+                nextScreen.SetViewParent(this.screenOpen);
+                await nextScreen.OpenView(model);
+
+                return nextScreen;
+            }
+            else
+            {
+                Debug.LogError($"The {typeof(TPresenter).Name} screen does not exist");
+
+                // Need to implement lazy initialization by Load from resource
+                return default;
+            }
         }
 
         public async UniTask CloseCurrentScreen()

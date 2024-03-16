@@ -1,5 +1,8 @@
 namespace UITemplate.Scripts
 {
+#if PHOTON
+    using UITemplate.Photon.Scripts;
+#endif
     using UITemplate.Scripts.Extension;
     using UITemplate.Scripts.Extension.ObjectPool;
     using UITemplate.Scripts.Extension.StateMachine.Signal;
@@ -16,6 +19,10 @@ namespace UITemplate.Scripts
             this.Container.Bind<IGameAssets>().To<GameAssets>().AsCached();
             this.Container.Bind<ObjectPoolManager>().AsCached().NonLazy();
             this.Container.Bind<IScreenManager>().FromInstance(Object.FindObjectOfType<ScreenManager>()).AsSingle().NonLazy();
+
+#if PHOTON
+            this.Container.BindInterfacesAndSelfTo<UITemplatePhotonService>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+#endif
         }
 
         private void InstallSignal()

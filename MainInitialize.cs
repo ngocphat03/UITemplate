@@ -1,7 +1,6 @@
 ﻿namespace UITemplate
 {
     using System.Collections.Generic;
-    using UITemplate.Photon.Scripts;
     using UITemplate.Scripts.Extension;
     using UITemplate.Scripts.Extension.Base;
     using UITemplate.Scripts.Extension.ObjectPool;

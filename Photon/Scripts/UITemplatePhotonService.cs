@@ -3,6 +3,7 @@ namespace UITemplate.Photon.Scripts
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Cysharp.Threading.Tasks;
     using global::Photon.Pun;
     using global::Photon.Realtime;
@@ -17,8 +18,11 @@ namespace UITemplate.Photon.Scripts
         public UITemplatePhotonService(IGameAssets gameAssets) { this.gameAssets = gameAssets; }
 
         public Action<List<RoomInfo>> UpdateListRoom;
+        public Action<Player> OnPlayerJoinedRoom;
+        public Action<Player> OnPlayerLeftTheRoom;
         
         public string NamePlayer => PhotonNetwork.NickName;
+        public List<Player> ListPlayerInRoom => PhotonNetwork.PlayerList.ToList();
 
         public void Initialize()
         {
@@ -48,6 +52,8 @@ namespace UITemplate.Photon.Scripts
         }
 
         public void JoinRoom(string nameRoom) { PhotonNetwork.JoinRoom(nameRoom); }
+        
+        public bool IsMasterRoom => PhotonNetwork.IsMasterClient;
 
         public void LeaveRoom() { }
 
@@ -83,6 +89,18 @@ namespace UITemplate.Photon.Scripts
         {
             Debug.Log("Room list updated");
             this.UpdateListRoom?.Invoke(roomList);
+        }
+
+        public override void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            Debug.Log($"Player {newPlayer.NickName} entered room");
+            this.OnPlayerJoinedRoom?.Invoke(newPlayer);
+        }
+        
+        public override void OnPlayerLeftRoom(Player otherPlayer)
+        {
+            Debug.Log($"Player {otherPlayer.NickName} left room");
+            this.OnPlayerLeftTheRoom?.Invoke(otherPlayer);
         }
 
         #endregion

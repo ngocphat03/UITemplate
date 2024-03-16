@@ -61,15 +61,13 @@ namespace UITemplate.Scripts.Screens.Template
             }
         }
 
-        protected override void OnViewReady()
+        protected override async void OnViewReady()
         {
             this.GameAssets = ObjectFactoryExtension.GetService<GameAssets>();
             base.OnViewReady();
             this.OpenViewAsync().Forget();
-        }
-
-        public override async UniTask BindData()
-        {
+            
+            
             this.objectPoolContainer = new(nameof(this.objectPoolContainer));
             Object.DontDestroyOnLoad(this.objectPoolContainer);
 
@@ -82,16 +80,20 @@ namespace UITemplate.Scripts.Screens.Template
                     this.LoadUserData().ContinueWith(this.OnUserDataLoaded)
                 ).ContinueWith(this.OnBlueprintAndUserDataLoaded)
             ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene);
+        }
 
+        public override async UniTask BindData()
+        {
             await UniTask.CompletedTask;
         }
 
         protected virtual async UniTask LoadNextScene()
         {
-            await SceneManager.LoadSceneAsync(this.NextSceneName);
+            // await SceneManager.LoadSceneAsync(this.NextSceneName);
+            await this.LoadSceneAsync();
         }
 
-        protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.GameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false); }
+        protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.GameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, true); }
 
         private UniTask LoadUserData()
         {

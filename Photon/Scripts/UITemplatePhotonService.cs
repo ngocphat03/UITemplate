@@ -32,7 +32,7 @@ namespace UITemplate.Photon.Scripts
 
         private void LoginPhoton()
         {
-            PhotonNetwork.NickName = "Player 1";
+            PhotonNetwork.NickName = "Player 12";
             PhotonNetwork.ConnectUsingSettings();
         }
 
@@ -55,7 +55,7 @@ namespace UITemplate.Photon.Scripts
         
         public bool IsMasterRoom => PhotonNetwork.IsMasterClient;
 
-        public void LeaveRoom() { }
+        public void LeaveRoom() { PhotonNetwork.LeaveRoom(); }
 
         public void JoinLobbym() { PhotonNetwork.JoinLobby(); }
 

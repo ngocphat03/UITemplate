@@ -35,6 +35,7 @@ namespace UITemplate.Photon.Scripts
 
         private void LoginPhoton()
         {
+            PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.LocalPlayer.NickName = $"$Player {Random.Range(0, 100)}";
             PhotonNetwork.ConnectUsingSettings();
         }

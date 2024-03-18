@@ -10,9 +10,12 @@ namespace UITemplate.Photon
         public override void InstallBindings()
         {
             this.Container.BindInterfacesAndSelfTo<UITemplatePhotonService>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+            this.Container.BindInterfacesAndSelfTo<UITemplatePhotonTurnController>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
 
             this.Container.DeclareSignal<OnCreateRoomSignal>();
             this.Container.DeclareSignal<OnUpdateRoomSignal>();
+            this.Container.DeclareSignal<StartOnlineGameSignal>();
+            this.Container.DeclareSignal<InYourTurnSignal>();
         }
     }
 }

@@ -1,12 +1,15 @@
 ﻿namespace UITemplate.Photon.Signals
 {
-    public class InYourTurnSignal
+    public class NotifyForAllPlayerSignal
     {
         public int ActorNumber { get; set; }
         
-        public InYourTurnSignal(int actorNumber)
+        public NotifyForAllPlayerSignal(int actorNumber)
         {
             this.ActorNumber = actorNumber;
+        }
+        public NotifyForAllPlayerSignal()
+        {
         }
     }
 }

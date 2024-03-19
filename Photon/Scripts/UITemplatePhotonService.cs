@@ -13,11 +13,9 @@ namespace UITemplate.Photon.Scripts
 
     public class UITemplatePhotonService : MonoBehaviourPunCallbacks, IInitializable
     {
-        [Inject]
-        public IGameAssets GameAssets;
+        [Inject] public IGameAssets GameAssets;
 
-        [Inject]
-        public SignalBus SignalBus;
+        [Inject] public SignalBus SignalBus;
 
         public string       NamePlayer       => PhotonNetwork.LocalPlayer.NickName;
         public List<Player> ListPlayerInRoom => PhotonNetwork.PlayerList.ToList();
@@ -25,6 +23,7 @@ namespace UITemplate.Photon.Scripts
         public List<RoomInfo> ListRoom = new();
 
         public bool IsMasterRoom => PhotonNetwork.IsMasterClient;
+        public int ActorNumber  => PhotonNetwork.LocalPlayer.ActorNumber;
 
         public void Initialize()
         {
@@ -36,7 +35,7 @@ namespace UITemplate.Photon.Scripts
         private void LoginPhoton()
         {
             PhotonNetwork.AutomaticallySyncScene = true;
-            PhotonNetwork.LocalPlayer.NickName = $"$Player {Random.Range(0, 100)}";
+            PhotonNetwork.LocalPlayer.NickName   = $"$Player {Random.Range(0, 100)}";
             PhotonNetwork.ConnectUsingSettings();
         }
 

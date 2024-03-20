@@ -12,7 +12,7 @@ namespace UITemplate.Photon
         {
             this.Container.BindInterfacesAndSelfTo<UITemplatePhotonService>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
             this.Container.BindInterfacesAndSelfTo<UITemplatePhotonTurnController>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
-            this.Container.Bind<DataRealTimeManager>().AsSingle().NonLazy();
+            this.Container.BindInterfacesAndSelfTo<DataRealTimeManager>().AsSingle().NonLazy();
             
             this.Container.DeclareSignal<OnCreateRoomSignal>();
             this.Container.DeclareSignal<OnUpdateRoomSignal>();

@@ -1,6 +1,7 @@
 ﻿#if PHOTON
 namespace UITemplate.Photon
 {
+    using UITemplate.Photon.Data;
     using UITemplate.Photon.Scripts;
     using UITemplate.Photon.Signals;
     using Zenject;
@@ -11,7 +12,8 @@ namespace UITemplate.Photon
         {
             this.Container.BindInterfacesAndSelfTo<UITemplatePhotonService>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
             this.Container.BindInterfacesAndSelfTo<UITemplatePhotonTurnController>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
-
+            this.Container.Bind<DataRealTimeManager>().AsSingle().NonLazy();
+            
             this.Container.DeclareSignal<OnCreateRoomSignal>();
             this.Container.DeclareSignal<OnUpdateRoomSignal>();
             this.Container.DeclareSignal<StartOnlineGameSignal>();

@@ -36,6 +36,8 @@ namespace UITemplate.Photon.Scripts
         {
             PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.LocalPlayer.NickName   = $"$Player {Random.Range(0, 100)}";
+            PhotonNetwork.SendRate               = 60;
+            PhotonNetwork.SerializationRate      = 5;
             PhotonNetwork.ConnectUsingSettings();
         }
 

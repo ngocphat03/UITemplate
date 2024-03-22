@@ -3,6 +3,7 @@
     using Cysharp.Threading.Tasks;
     using UITemplate.Scripts.Interface;
     using UnityEngine;
+    using UnityEngine.Serialization;
 
     public class BaseView : MonoBehaviour, IScreenView
     {
@@ -10,6 +11,7 @@
         public                   RectTransform RectTransform { get;                  private set; }
         public                   bool          IsReadyToUse  { get;                  private set; }
         protected virtual        CanvasGroup   ViewRoot      { get => this.viewRoot; set => this.viewRoot = value; }
+        public                   bool          blocksRaycasts = true;
 
         private void Awake()
         {
@@ -22,7 +24,7 @@
             {
                 this.RectTransform = this.GetComponent<RectTransform>();
             }
-            
+
             this.UpdateAlpha(0);
             this.IsReadyToUse = true;
         }
@@ -49,9 +51,9 @@
 
         private void UpdateAlpha(float value)
         {
-            if(this.viewRoot == null) return;   
+            if (this.viewRoot == null) return;
             this.ViewRoot.alpha          = value;
-            this.ViewRoot.blocksRaycasts = value >= 1;
+            this.ViewRoot.blocksRaycasts = this.blocksRaycasts && value >= 1;
         }
     }
 }

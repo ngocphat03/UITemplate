@@ -1,7 +1,10 @@
 ﻿namespace UITemplate.Photon.Data
 {
+    using System;
+    using Controller;
     using global::Signals;
     using UITemplate.Photon.Scripts;
+    using UnityEngine;
     using Zenject;
 
     public class DataRealTimeManager : IInitializable
@@ -11,22 +14,35 @@
 
         public DataRealTimeManager(UITemplatePhotonService photonService, SignalBus signalBus)
         {
-            this.photonService = photonService;
-            this.signalBus     = signalBus;
+            this.photonService     = photonService;
+            this.signalBus         = signalBus;
         }
 
         public SynchronizedData SynchronizedData { get; private set; }
+        
+        public Action<int, int> OnUpdateDataInUI { get; set; }
+        public Action <int> UpdatePlayerScore { get; set; }
 
         public void Initialize() { this.SynchronizedData = new SynchronizedData(); }
 
-        public void ChangeScore(int newScore, int actorPlayer)
+        // NOTE: AddScore and AddOpponentScore do not run at the same time on the same device
+        public void AddScore(int newScore)
         {
-            if (actorPlayer == this.photonService.ActorNumber)
-                this.SynchronizedData.MyScore += newScore;
-            else
-                this.SynchronizedData.OpponentScore += newScore;
+            this.SynchronizedData.MyScore += newScore;
             
-            this.signalBus.Fire(new UpdateDataInUISignal(this.SynchronizedData.MyScore, this.SynchronizedData.OpponentScore));
+            this.OnUpdateDataInUI?.Invoke(this.SynchronizedData.MyScore, this.SynchronizedData.OpponentScore);
+            this.UpdatePlayerScore?.Invoke(newScore);
+            // this.signalBus.Fire<UpdateDataInUISignal>();
+            // this.signalBus.Fire(new UpdateScorePlayerSignal(newScore));
+        }
+
+        public void AddOpponentScore(int newScore)
+        {
+            this.SynchronizedData.OpponentScore += newScore;
+            Debug.Log($"Current score: {this.SynchronizedData.OpponentScore}");
+
+            this.OnUpdateDataInUI?.Invoke(this.SynchronizedData.MyScore, this.SynchronizedData.OpponentScore);
+            // this.signalBus.Fire(new UpdateDataInUISignal(this.SynchronizedData.MyScore, this.SynchronizedData.OpponentScore));
         }
     }
 }

@@ -17,13 +17,14 @@ namespace UITemplate.Photon.Scripts
 
         [Inject] public SignalBus SignalBus;
 
-        public string       NamePlayer       => PhotonNetwork.LocalPlayer.NickName;
-        public List<Player> ListPlayerInRoom => PhotonNetwork.PlayerList.ToList();
+        public string       NamePlayer         => PhotonNetwork.LocalPlayer.NickName;
+        public string       OpponentNamePlayer => PhotonNetwork.PlayerList.FirstOrDefault(x => x.ActorNumber != PhotonNetwork.LocalPlayer.ActorNumber)?.NickName;
+        public List<Player> ListPlayerInRoom   => PhotonNetwork.PlayerList.ToList();
 
         public List<RoomInfo> ListRoom = new();
 
         public bool IsMasterRoom => PhotonNetwork.IsMasterClient;
-        public int ActorNumber  => PhotonNetwork.LocalPlayer.ActorNumber;
+        public int  ActorNumber  => PhotonNetwork.LocalPlayer.ActorNumber;
 
         public void Initialize()
         {

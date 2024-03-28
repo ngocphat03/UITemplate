@@ -9,12 +9,12 @@
 
     public class DataRealTimeManager : IInitializable
     {
-        private readonly UITemplatePhotonService photonService;
+        private readonly UITemplatePhotonRoomService photonRoomService;
         private readonly SignalBus               signalBus;
 
-        public DataRealTimeManager(UITemplatePhotonService photonService, SignalBus signalBus)
+        public DataRealTimeManager(UITemplatePhotonRoomService photonRoomService, SignalBus signalBus)
         {
-            this.photonService     = photonService;
+            this.photonRoomService     = photonRoomService;
             this.signalBus         = signalBus;
         }
 

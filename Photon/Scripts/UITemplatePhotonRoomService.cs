@@ -11,7 +11,7 @@ namespace UITemplate.Photon.Scripts
     using Zenject;
     using Random = UnityEngine.Random;
 
-    public class UITemplatePhotonService : MonoBehaviourPunCallbacks, IInitializable
+    public class UITemplatePhotonRoomService : MonoBehaviourPunCallbacks, IInitializable
     {
         [Inject] public IGameAssets GameAssets;
 

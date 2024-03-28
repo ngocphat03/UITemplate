@@ -4,13 +4,14 @@ namespace UITemplate.Photon
     using UITemplate.Photon.Data;
     using UITemplate.Photon.Scripts;
     using UITemplate.Photon.Signals;
+    using UnityEngine;
     using Zenject;
 
     public class PhotonInstall : Installer<PhotonInstall>
     {
         public override void InstallBindings()
         {
-            this.Container.BindInterfacesAndSelfTo<UITemplatePhotonService>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+            this.Container.BindInterfacesAndSelfTo<UITemplatePhotonRoomService>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
             this.Container.BindInterfacesAndSelfTo<UITemplatePhotonTurnController>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
             this.Container.BindInterfacesAndSelfTo<DataRealTimeManager>().AsSingle().NonLazy();
             

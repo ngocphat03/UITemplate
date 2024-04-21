@@ -80,16 +80,15 @@
                 Debug.LogError($"Can't find action with name: {nameAction}");
             }
         }
-        
+
         // HOT FIX: Add this method to fix error: RPC method 'CallbackObjectAction' found on object with PhotonView 2 but has wrong parameters. Implement as 'CallbackObjectAction(String)'. PhotonMessageInfo is optional as final parameter.Return type must be void or IEnumerator (if you enable RunRpcCoroutines).
         [PunRPC]
         public void CallbackObjectAction(string stringValue)
         {
             Debug.Log("Received string value: " + stringValue);
-            if (this.callbackDictionary.TryGetValue(stringValue, out var action))
-            {
-                action();
-            }
+            this.callbackDictionary.TryGetValue(stringValue, out var action);
+
+            action();
         }
     }
 }

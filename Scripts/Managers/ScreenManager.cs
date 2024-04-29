@@ -32,11 +32,9 @@
         private readonly Dictionary<Type, Task<IScreenPresenter>> typeToPendingScreen         = new Dictionary<Type, Task<IScreenPresenter>>();
 
         [Inject]
-        public void Init(IGameAssets gameAsset)
-        {
-            this.gameAssets = gameAsset;
-            this.ResearchScreen();
-        }
+        public void Init(IGameAssets gameAsset) { this.gameAssets = gameAsset; }
+
+        private void Start() { this.ResearchScreen(); }
 
         public void ResearchScreen()
         {
@@ -102,6 +100,45 @@
         }
 
         public async UniTask<TPresenter> OpenScreen<TPresenter, TModel>(TModel model) where TPresenter : IScreenPresenter<TModel>
+        {
+            var nextScreen = (await this.GetScreen<TPresenter>());
+
+            if (nextScreen != null)
+            {
+                nextScreen.SetViewParent(this.screenOpen);
+                await nextScreen.OpenView(model);
+
+                return nextScreen;
+            }
+            else
+            {
+                Debug.LogError($"The {typeof(TPresenter).Name} screen does not exist");
+
+                // Need to implement lazy initialization by Load from resource
+                return default;
+            }
+        }
+        
+        public async UniTask<T> OpenPopup<T>() where T : IScreenPresenter
+        {
+            var nextScreen = await this.GetScreen<T>();
+
+            if (nextScreen != null)
+            {
+                nextScreen.SetViewParent(this.screenOpen);
+                await nextScreen.OpenViewAsync();
+
+                return nextScreen;
+            }
+            else
+            {
+                Debug.LogError($"The {typeof(T).Name} screen does not exist");
+
+                return default;
+            }
+        }
+        
+        public async UniTask<TPresenter> OpenPopup<TPresenter, TModel>(TModel model) where TPresenter : IScreenPresenter<TModel>
         {
             var nextScreen = (await this.GetScreen<TPresenter>());
 

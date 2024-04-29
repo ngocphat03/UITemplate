@@ -2,6 +2,7 @@ namespace UITemplate.Scripts.Screens.Template
 {
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
+    using TMPro;
     using UITemplate.Scripts.Extension;
     using UITemplate.Scripts.Extension.ObjectPool;
     using UITemplate.Scripts.Screens.Base;
@@ -14,9 +15,12 @@ namespace UITemplate.Scripts.Screens.Template
 
     public class UITemplateLoadingScreenView : BaseView
     {
-        [SerializeField] private Slider loadingSlider;
-        private                  Tween  tween;
-        private                  float  trueProgress;
+        [SerializeField] private Slider          loadingSlider;
+        [SerializeField] private TextMeshProUGUI loadingProgressTxt;
+
+        private  Tween  tween;
+        private  float  trueProgress;
+        internal string LoadingText;
 
         private void Start() { this.loadingSlider.value = 0f; }
 
@@ -27,7 +31,12 @@ namespace UITemplate.Scripts.Screens.Template
             this.tween.Kill();
             this.tween = DOTween.To(
                 getter: () => this.loadingSlider.value,
-                setter: value => this.loadingSlider.value = value,
+                setter: value =>
+                {
+                    this.loadingSlider.value = value;
+                    if (this.loadingProgressTxt != null)
+                        this.loadingProgressTxt.text = string.Format(this.LoadingText, (int)(value * 100));
+                },
                 endValue: this.trueProgress = progress,
                 duration: 0.5f
             );
@@ -44,10 +53,10 @@ namespace UITemplate.Scripts.Screens.Template
     [ScreenInfo(nameof(UITemplateLoadingScreenView))]
     public class UITemplateLoadingScreenPresenter : UITemplateBaseScreenPresenter<UITemplateLoadingScreenView>
     {
-        protected IGameAssets          GameAssets;
-        private   float                loadingProgress;
-        private   int                  loadingSteps;
-        private   GameObject           objectPoolContainer;
+        protected IGameAssets GameAssets;
+        private   float       loadingProgress;
+        private   int         loadingSteps;
+        private   GameObject  objectPoolContainer;
 
         protected virtual string NextSceneName => "1.MainScene";
 
@@ -65,14 +74,12 @@ namespace UITemplate.Scripts.Screens.Template
         {
             this.GameAssets = ObjectFactoryExtension.GetService<GameAssets>();
             base.OnViewReady();
-            this.OpenViewAsync().Forget();
-            
-            
+
             this.objectPoolContainer = new(nameof(this.objectPoolContainer));
             Object.DontDestroyOnLoad(this.objectPoolContainer);
 
-            this.LoadingProgress = 0f;
-            this.loadingSteps    = 1;
+            this.LoadingProgress       = 0f;
+            this.loadingSteps          = 1;
 
             await UniTask.WhenAll(
                 this.Preload(),
@@ -82,18 +89,16 @@ namespace UITemplate.Scripts.Screens.Template
             ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene);
         }
 
-        public override async UniTask BindData()
-        {
-            await UniTask.CompletedTask;
-        }
+        public override async UniTask BindData() { await UniTask.CompletedTask; }
 
         protected virtual async UniTask LoadNextScene()
         {
-            // await SceneManager.LoadSceneAsync(this.NextSceneName);
-            await this.LoadSceneAsync();
+            var nextScene = await this.TrackProgress(this.LoadSceneAsync());
+            await this.View.CompleteLoading();
+            await nextScene.ActivateAsync();
         }
 
-        protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.GameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, true); }
+        protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.GameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false); }
 
         private UniTask LoadUserData()
         {
@@ -114,7 +119,7 @@ namespace UITemplate.Scripts.Screens.Template
         protected virtual UniTask PreloadAssets<T>(params object[] keys)
         {
             return UniTask.WhenAll(this.GameAssets.PreloadAsync<T>(this.NextSceneName, keys)
-                .Select(this.TrackProgress));
+                                       .Select(this.TrackProgress));
         }
 
         protected virtual UniTask CreateObjectPool(string prefabName, int initialPoolSize = 1)
@@ -142,12 +147,12 @@ namespace UITemplate.Scripts.Screens.Template
             }
 
             return aoh.ToUniTask(Progress.CreateOnlyValueChanged<float>(UpdateProgress))
-                .ContinueWith(result =>
-                {
-                    UpdateProgress(1f);
+                      .ContinueWith(result =>
+                      {
+                          UpdateProgress(1f);
 
-                    return result;
-                });
+                          return result;
+                      });
         }
     }
 }

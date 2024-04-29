@@ -1,6 +1,5 @@
 namespace UITemplate.Scripts
-{
-    using UITemplate.Photon.Scripts;
+{   
     using UITemplate.Scripts.Extension;
     using UITemplate.Scripts.Extension.ObjectPool;
     using UITemplate.Scripts.Extension.StateMachine.Signal;

@@ -30,10 +30,10 @@
 
         public override UniTask BindData() { return UniTask.CompletedTask; }
 
-        public async void OnClose() { await this.CloseViewAsync(); }
+        protected virtual void OnClose() {this.CloseView(); }
 
-        public void OnMusicValueChanged(float value) { this.soundManager.ChangeVolumeMusic(value); }
+        protected virtual void OnMusicValueChanged(float value) { this.soundManager.ChangeVolumeMusic(value); }
 
-        public void OnSoundValueChanged(float value) { this.soundManager.ChangeVolumeSound(value); }
+        protected virtual void OnSoundValueChanged(float value) { this.soundManager.ChangeVolumeSound(value); }
     }
 }

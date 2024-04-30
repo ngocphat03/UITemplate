@@ -14,8 +14,10 @@
 
         // Private variable
         private AudioSource rootAudioSource;
-        private float       volumeSound;
-        private float       volumeMusic;
+
+        // Public variable
+        public float VolumeSound { get; private set; }
+        public float VolumeMusic { get; private set; }
 
         // Private readonly variable
         private readonly Dictionary<string, AudioSource> musics = new();
@@ -29,9 +31,9 @@
         public void Initialize()
         {
             // Initialize volume
-            this.volumeSound = PlayerPrefs.GetFloat(SoundManager.KeySoundVolume, 1);
-            this.volumeMusic = PlayerPrefs.GetFloat(SoundManager.KeyMusicVolume, 1);
-            
+            this.VolumeSound = PlayerPrefs.GetFloat(SoundManager.KeySoundVolume, 1);
+            this.VolumeMusic = PlayerPrefs.GetFloat(SoundManager.KeyMusicVolume, 1);
+
             CreateAudioPool();
 
             void CreateAudioPool()
@@ -46,7 +48,8 @@
         public async void PlaySound(string nameSound)
         {
             var audioClip = await this.GameAssets.LoadAssetAsync<AudioClip>(nameSound);
-            var sound = this.SetAndPlayAudio(audioClip);
+            var sound     = this.SetAndPlayAudio(audioClip);
+            sound.volume = this.VolumeSound;
             this.sounds.Add(sound);
         }
 
@@ -64,6 +67,7 @@
 
             var audioClip = await this.GameAssets.LoadAssetAsync<AudioClip>(nameMusic);
             var music     = this.SetAndPlayAudio(audioClip, true);
+            music.volume = this.VolumeMusic;
             this.musics.Add(nameMusic, music);
         }
 
@@ -74,12 +78,12 @@
             audio.clip = audioClip;
             audio.Play();
 
-            if (!loop) UniTask.Delay(TimeSpan.FromSeconds(audio.clip.length)).ContinueWith(() =>
-            {
-                audio.Recycle();
-                this.sounds.Remove(audio);
-            
-            }).Forget();
+            if (!loop)
+                UniTask.Delay(TimeSpan.FromSeconds(audio.clip.length)).ContinueWith(() =>
+                {
+                    audio.Recycle();
+                    this.sounds.Remove(audio);
+                }).Forget();
 
             return audio;
         }
@@ -88,20 +92,20 @@
 
         public void ChangeVolumeSound(float volume)
         {
-            this.rootAudioSource.volume = this.volumeSound = volume;
+            this.rootAudioSource.volume = this.VolumeSound  = volume;
             foreach (var sound in this.sounds) sound.volume = volume;
         }
-        
+
         public void ChangeVolumeMusic(float volume)
         {
-            this.volumeMusic = volume;
+            this.VolumeMusic = volume;
             foreach (var music in this.musics.Values) music.volume = volume;
         }
 
         public void Dispose()
         {
-            PlayerPrefs.SetFloat(SoundManager.KeySoundVolume, this.volumeSound);
-            PlayerPrefs.SetFloat(SoundManager.KeyMusicVolume, this.volumeMusic);
+            PlayerPrefs.SetFloat(SoundManager.KeySoundVolume, this.VolumeSound);
+            PlayerPrefs.SetFloat(SoundManager.KeyMusicVolume, this.VolumeMusic);
         }
     }
 }

@@ -65,7 +65,7 @@
             if (this.ScreenStatus == ScreenStatus.Closed) return;
             this.ScreenStatus = ScreenStatus.Closed;
             await this.View.Close();
-            this.OnCloseView(this);
+            this.OnCloseView?.Invoke(this);
             this.Dispose();
         }
 

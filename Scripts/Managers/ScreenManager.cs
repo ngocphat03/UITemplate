@@ -174,6 +174,8 @@
             this.typeToLoadedScreenPresenter.Add(typePresenter, screenPresenter);
             await screenPresenter.OpenViewAsync();
         }
+        
+        public IScreenPresenter GetCurrentScreen() { return this.activeScreens; }
 
         public void Dispose() { }
     }

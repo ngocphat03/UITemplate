@@ -6,6 +6,7 @@
     using UITemplate.Scripts.Extension.ObjectPool;
     using UnityEngine;
     using Zenject;
+    using Object = UnityEngine.Object;
 
     public class SoundManager : IInitializable, IDisposable
     {
@@ -24,7 +25,7 @@
         private readonly List<AudioSource>               sounds = new();
 
         // Const variable
-        private const int    CountAudioCreate = 4;
+        private const int    CountAudioCreate = 6;
         private const string KeySoundVolume   = "SoundVolume";
         private const string KeyMusicVolume   = "MusicVolume";
 
@@ -42,6 +43,7 @@
                 audioObject.AddComponent<AudioSource>();
                 this.rootAudioSource = audioObject.GetComponent<AudioSource>();
                 this.rootAudioSource.CreatePool(SoundManager.CountAudioCreate);
+                Object.DontDestroyOnLoad(audioObject);
             }
         }
 

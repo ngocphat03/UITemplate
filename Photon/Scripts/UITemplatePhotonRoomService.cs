@@ -1,6 +1,7 @@
 #if PHOTON
 namespace UITemplate.Photon.Scripts
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using global::Photon.Pun;
@@ -68,7 +69,11 @@ namespace UITemplate.Photon.Scripts
             this.SignalBus.Fire<OnCreateRoomSignal>();
         }
 
-        public override void OnJoinedRoom() { Debug.Log("OnJoinedRoom"); }
+        public override void OnJoinedRoom()
+        {
+            this.SignalBus.Fire(new OnJoinRoomSignal());
+            Debug.Log("OnJoinedRoom");
+        }
 
         public override void OnLeftRoom() { Debug.Log("OnLeftRoom"); }
 
@@ -89,6 +94,12 @@ namespace UITemplate.Photon.Scripts
         {
             Debug.Log("OnConnectedToMaster");
             PhotonNetwork.JoinLobby();
+        }
+
+        public void GetRoomList()
+        {
+            PhotonNetwork.GetCustomRoomList(TypedLobby.Default, "");
+
         }
 
         #endregion

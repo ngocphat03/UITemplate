@@ -20,6 +20,7 @@ namespace UITemplate.Photon
             this.Container.DeclareSignal<StartOnlineGameSignal>();
             this.Container.DeclareSignal<InYourTurnSignal>();
             this.Container.DeclareSignal<NotifyForAllPlayerSignal>();
+            this.Container.DeclareSignal<OnJoinRoomSignal>();
         }
     }
 }

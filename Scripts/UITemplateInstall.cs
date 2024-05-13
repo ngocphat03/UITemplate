@@ -31,6 +31,10 @@ namespace UITemplate.Scripts
 #if PHOTON
             UITemplate.Photon.PhotonInstall.Install(this.Container);
 #endif
+
+#if NOTIFICATION
+            UITemplate.Scripts.TemplateService.NotificationService.NotificationInstall.Install(this.Container);
+#endif
         }
     }
 }

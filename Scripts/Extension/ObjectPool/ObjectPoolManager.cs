@@ -227,7 +227,9 @@
 
         public       UniTask<GameObject> Spawn(string prefabName)                        => this.Spawn(prefabName, null, Vector3.zero, Quaternion.identity);
         
-        public async UniTask<T>          Spawn<T>(string prefabName) where T : Component => (await this.Spawn(prefabName, null, Vector3.zero, Quaternion.identity)).GetComponent<T>();
+        public async UniTask<T> Spawn<T>(string prefabName) where T : Component => (await this.Spawn(prefabName, null, Vector3.zero, Quaternion.identity)).GetComponent<T>();
+        
+        public async UniTask<T> Spawn<T>(string prefabName, Transform parent, Vector3 position = default, Quaternion quaternion = default) where T : Component => (await this.Spawn(prefabName, parent, position, quaternion)).GetComponent<T>();
 
 
         #endregion

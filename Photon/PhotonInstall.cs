@@ -21,6 +21,7 @@ namespace UITemplate.Photon
             this.Container.DeclareSignal<InYourTurnSignal>();
             this.Container.DeclareSignal<NotifyForAllPlayerSignal>();
             this.Container.DeclareSignal<OnJoinRoomSignal>();
+            this.Container.DeclareSignal<OnJoinRoomFalseSignal>();
         }
     }
 }

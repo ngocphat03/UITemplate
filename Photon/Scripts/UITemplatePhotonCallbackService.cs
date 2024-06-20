@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using global::Photon.Pun;
     using UnityEngine;
 
@@ -49,7 +50,15 @@
             Array.Copy(parameters, newParameters, parameters.Length);
             newParameters[^1] = nameAction;
 
-            this.photonView.RPC(nameof(this.CallbackObjectAction), target, (object[])newParameters);
+            if (target is RpcTarget.Others)
+            {
+                var otherPlayer = PhotonNetwork.PlayerListOthers.FirstOrDefault();
+                this.photonView.RPC(nameof(this.CallbackObjectAction), otherPlayer, newParameters);
+            }
+            else
+            {
+                this.photonView.RPC(nameof(this.CallbackObjectAction), target, newParameters);
+            }
         }
 
         [PunRPC]

@@ -1,5 +1,9 @@
 namespace UITemplate.Scripts
-{   
+{
+#if ADS_SERVICE
+    using UITemplate.AdsService;
+#endif
+    using UITemplate.Authentication;
     using UITemplate.Scripts.Extension;
     using UITemplate.Scripts.Extension.ObjectPool;
     using UITemplate.Scripts.Extension.StateMachine.Signal;
@@ -35,6 +39,12 @@ namespace UITemplate.Scripts
 #if NOTIFICATION
             UITemplate.Scripts.TemplateService.NotificationService.NotificationInstall.Install(this.Container);
 #endif
+#if ADS_SERVICE
+            AdsServiceInstall.Install(this.Container);
+#endif
+            AuthenticationInstall.Install(this.Container);
+            Leaderboard.LeaderboardInstall.Install(this.Container);
+
         }
     }
 }

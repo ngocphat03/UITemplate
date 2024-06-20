@@ -4,6 +4,7 @@ namespace UITemplate.Photon.Scripts
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using ExitGames.Client.Photon;
     using global::Photon.Pun;
     using global::Photon.Realtime;
     using UITemplate.Photon.Signals;
@@ -51,6 +52,12 @@ namespace UITemplate.Photon.Scripts
             PhotonNetwork.CreateRoom(nameRoom);
         }
 
+        public virtual void CreateCustom(string nameRoom, RoomOptions roomOptions, TypedLobby typedLobby, string[] expectedUsers)
+        {
+            Debug.Log($"Create custom room with parameter: nameRoom: {nameRoom}, roomOptions: {roomOptions}, typedLobby: {typedLobby}, expectedUsers: {expectedUsers}");
+            PhotonNetwork.CreateRoom(nameRoom, roomOptions, typedLobby, expectedUsers);
+        }
+
         public virtual void Join(string nameRoom)
         {
             Debug.Log(": Join Room " + nameRoom);
@@ -77,7 +84,15 @@ namespace UITemplate.Photon.Scripts
 
         public override void OnLeftRoom() { Debug.Log("OnLeftRoom"); }
 
-        public override void OnCreateRoomFailed(short returnCode, string message) { Debug.Log("OnCreateRoomFailed: " + message); }
+        public override void OnCreateRoomFailed(short returnCode, string message)
+        {
+            Debug.Log("OnCreateRoomFailed: " + message);
+            this.SignalBus.Fire(new OnJoinRoomFalseSignal
+            {
+                ErrorCode = returnCode,
+                Message   = message,
+            });
+        }
 
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
         {
@@ -96,10 +111,11 @@ namespace UITemplate.Photon.Scripts
             PhotonNetwork.JoinLobby();
         }
 
-        public void GetRoomList()
+        public void GetCustomRoomList(string sqlLobbyFilter)
         {
-            PhotonNetwork.GetCustomRoomList(TypedLobby.Default, "");
-
+            // PhotonNetwork.GetCustomRoomList(new TypedLobby(nameof(EPrivacySetting.Public), LobbyType.SqlLobby), sqlLobbyFilter);
+            
+            PhotonNetwork.GetCustomRoomList(PhotonNetwork.CurrentLobby, "C0 = 'Public'");
         }
 
         #endregion

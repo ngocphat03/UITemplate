@@ -35,11 +35,11 @@ namespace UITemplate.Scripts.Screens.Template
                 {
                     this.loadingSlider.value = value;
                     if (this.loadingProgressTxt != null)
-                        this.loadingProgressTxt.text = string.Format(this.LoadingText, (int)(value * 100));
+                        this.loadingProgressTxt.text = string.Format(this.LoadingText, (int)(value * 100)); 
                 },
                 endValue: this.trueProgress = progress,
                 duration: 0.5f
-            );
+            ).SetUpdate(true);
         }
 
         public UniTask CompleteLoading()

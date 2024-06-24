@@ -1,4 +1,5 @@
-﻿namespace UITemplate.Authentication
+﻿#if FIREBASE && AUTHENTICATION
+namespace UITemplate.Authentication
 {
     using Zenject;
 
@@ -10,3 +11,4 @@
         }
     }
 }
+#endif

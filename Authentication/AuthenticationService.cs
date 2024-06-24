@@ -1,4 +1,5 @@
-﻿namespace UITemplate.Authentication
+﻿#if FIREBASE && AUTHENTICATION
+namespace UITemplate.Authentication
 {
     using System;
     using Zenject;
@@ -63,7 +64,7 @@
                 Debug.LogWarning($"Failed to register task with {e}");
                 var firebaseEx = e.GetBaseException() as FirebaseException;
                 // ReSharper disable once PossibleNullReferenceException
-                var errorCode  = (AuthError)firebaseEx.ErrorCode;
+                var errorCode = (AuthError)firebaseEx.ErrorCode;
 
                 var message = errorCode switch
                 {
@@ -94,7 +95,7 @@
                     Debug.LogWarning(message: $"Failed to register task with {registerTask.Exception}");
                     var firebaseEx = registerTask.Exception.GetBaseException() as FirebaseException;
                     // ReSharper disable once PossibleNullReferenceException
-                    var errorCode  = (AuthError)firebaseEx.ErrorCode;
+                    var errorCode = (AuthError)firebaseEx.ErrorCode;
 
                     var message = errorCode switch
                     {
@@ -128,7 +129,7 @@
                             Debug.LogWarning(message: $"Failed to register task with {profileTask.Exception}");
                             var firebaseEx = profileTask.Exception.GetBaseException() as FirebaseException;
                             // ReSharper disable once PossibleNullReferenceException
-                            var errorCode  = (AuthError)firebaseEx.ErrorCode;
+                            var errorCode = (AuthError)firebaseEx.ErrorCode;
 
                             Debug.LogError($"Username Set Failed! {errorCode}");
                             onRegisterFalse?.Invoke();
@@ -149,3 +150,4 @@
         }
     }
 }
+#endif

@@ -1,4 +1,5 @@
-﻿namespace UITemplate.Leaderboard.Data
+﻿#if LEADERBOARD
+namespace UITemplate.Leaderboard.Data
 {
     public class DataLeaderboard
     {
@@ -12,3 +13,4 @@
         }
     }
 }
+#endif

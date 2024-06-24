@@ -1,4 +1,5 @@
-﻿namespace UITemplate.Leaderboard
+﻿#if FIREBASE && LEADERBOARD
+namespace UITemplate.Leaderboard
 {
     using Zenject;
     using Firebase;
@@ -27,8 +28,8 @@
 
         public void UpdateInfo()
         {
-            this.FirebaseAuth      = this.authenticationService.FirebaseAuth;
-            this.FirebaseUser      = this.authenticationService.FirebaseUser;
+            this.FirebaseAuth = this.authenticationService.FirebaseAuth;
+            this.FirebaseUser = this.authenticationService.FirebaseUser;
             this.DatabaseReference = this.authenticationService.DatabaseReference;
 
             this.dataLeaderboards = new List<DataLeaderboard>();
@@ -99,3 +100,4 @@
         }
     }
 }
+#endif

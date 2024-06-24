@@ -1,4 +1,5 @@
-﻿namespace UITemplate.Leaderboard
+﻿#if LEADERBOARD
+namespace UITemplate.Leaderboard
 {
     using Zenject;
 
@@ -7,3 +8,4 @@
         public override void InstallBindings() { this.Container.BindInterfacesAndSelfTo<LeaderboardService>().AsSingle().NonLazy(); }
     }
 }
+#endif

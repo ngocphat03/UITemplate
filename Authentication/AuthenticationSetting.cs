@@ -5,7 +5,7 @@
     [CreateAssetMenu(fileName = "AuthenticationSetting", menuName = "Authentication/AuthenticationSetting")]
     public class AuthenticationSetting : ScriptableObject
     {
-        public string GoogleAPI           { get; set; }
-        public string FirebaseDatabaseURL { get; set; }
+        public string googleAPI;
+        public string firebaseDatabaseURL;
     }
 }

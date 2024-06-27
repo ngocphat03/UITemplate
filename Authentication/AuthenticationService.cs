@@ -33,14 +33,14 @@ namespace UITemplate.Authentication
 
             this.googleSignInConfiguration = new GoogleSignInConfiguration
             {
-                WebClientId    = this.authenticationSetting.GoogleAPI,
+                WebClientId    = this.authenticationSetting.googleAPI,
                 RequestIdToken = true,
             };
 
             if (this.DependencyStatus == DependencyStatus.Available)
             {
                 this.Auth              = FirebaseAuth.DefaultInstance;
-                this.DatabaseReference = FirebaseDatabase.GetInstance(this.authenticationSetting.FirebaseDatabaseURL).RootReference;
+                this.DatabaseReference = FirebaseDatabase.GetInstance(this.authenticationSetting.firebaseDatabaseURL).RootReference;
             }
             else
             {

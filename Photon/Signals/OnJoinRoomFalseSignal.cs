@@ -1,4 +1,6 @@
-﻿namespace UITemplate.Photon.Signals
+﻿#if PHOTON
+
+namespace UITemplate.Photon.Signals
 {
     public class OnJoinRoomFalseSignal
     {
@@ -6,3 +8,4 @@
         public string Message   { get; set; }
     }
 }
+#endif

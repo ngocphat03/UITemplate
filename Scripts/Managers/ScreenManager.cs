@@ -9,6 +9,7 @@
     using Cysharp.Threading.Tasks;
     using UnityEngine;
     using Zenject;
+    using UITemplate.Scripts.Extension.Ulties;
 
     public interface IScreenManager
     {

@@ -1,6 +1,7 @@
 ﻿namespace UITemplate.Scripts.Extension
 {
     using System;
+    using UITemplate.Scripts.Extension.Ulties;
     using UnityEngine;
     using UITemplate.Scripts.Interface;
     using Zenject;

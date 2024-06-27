@@ -1,4 +1,7 @@
-﻿namespace UITemplate.Photon.Data
+﻿
+#if PHOTON
+
+namespace UITemplate.Photon.Data
 {
 
     public class SynchronizedData
@@ -8,3 +11,4 @@
     }
 
 }
+#endif

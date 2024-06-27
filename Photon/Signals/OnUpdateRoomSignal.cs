@@ -1,4 +1,7 @@
-﻿namespace UITemplate.Photon.Signals
+﻿#if PHOTON
+
+
+namespace UITemplate.Photon.Signals
 {
     using System.Collections.Generic;
     using global::Photon.Realtime;
@@ -9,3 +12,4 @@
         public OnUpdateRoomSignal(List<RoomInfo> listRoom) { this.ListRoom = listRoom; }
     }
 }
+#endif

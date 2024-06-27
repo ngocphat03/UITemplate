@@ -1,4 +1,6 @@
-﻿namespace UITemplate.Photon.Signals
+﻿
+#if PHOTON
+namespace UITemplate.Photon.Signals
 {
     public class InYourTurnSignal
     {
@@ -10,3 +12,4 @@
         }
     }
 }
+#endif

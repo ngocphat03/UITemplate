@@ -1,4 +1,7 @@
-﻿namespace UITemplate.Photon.Data
+﻿#if PHOTON
+
+
+namespace UITemplate.Photon.Data
 {
     using System;
     using Controller;
@@ -46,3 +49,4 @@
         }
     }
 }
+#endif

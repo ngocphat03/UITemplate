@@ -1,4 +1,5 @@
-﻿namespace UITemplate.Photon.Scripts
+﻿#if PHOTON
+namespace UITemplate.Photon.Scripts
 {
     using System;
     using System.Collections.Generic;
@@ -101,3 +102,4 @@
         }
     }
 }
+#endif

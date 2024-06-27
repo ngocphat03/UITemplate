@@ -9,6 +9,7 @@ namespace UITemplate.Photon.Scripts
     using global::Photon.Realtime;
     using UITemplate.Photon.Signals;
     using UITemplate.Scripts.Extension;
+    using UITemplate.Scripts.Extension.Ulties;
     using UnityEngine;
     using Zenject;
     using Random = UnityEngine.Random;

@@ -3,27 +3,44 @@ namespace UITemplate.Authentication
 {
     using System;
     using Zenject;
+    using Google;
     using Firebase;
     using UnityEngine;
     using Firebase.Auth;
-    using Cysharp.Threading.Tasks;
     using Firebase.Database;
+    using Firebase.Extensions;
+    using System.Threading.Tasks;
+    using Cysharp.Threading.Tasks;
 
     public class AuthenticationService : IInitializable
     {
         public DependencyStatus  DependencyStatus  { get; private set; }
-        public FirebaseAuth      FirebaseAuth      { get; private set; }
-        public FirebaseUser      FirebaseUser      { get; private set; }
+        public FirebaseAuth      Auth              { get; private set; }
+        public FirebaseUser      User              { get; private set; }
         public DatabaseReference DatabaseReference { get; private set; }
+
+        private GoogleSignInConfiguration googleSignInConfiguration;
+        private AuthenticationSetting     authenticationSetting;
 
         public async void Initialize()
         {
+            // Load the authentication setting
+            this.authenticationSetting = Resources.Load<AuthenticationSetting>(nameof(AuthenticationSetting));
+
+            if (this.authenticationSetting == null) throw new Exception($"Cannot find AuthenticationSetting in Resources folder");
+
             await this.CheckAndFixDependenciesAsync();
+
+            this.googleSignInConfiguration = new GoogleSignInConfiguration
+            {
+                WebClientId    = this.authenticationSetting.GoogleAPI,
+                RequestIdToken = true,
+            };
 
             if (this.DependencyStatus == DependencyStatus.Available)
             {
-                this.FirebaseAuth = FirebaseAuth.DefaultInstance;
-                this.DatabaseReference = FirebaseDatabase.GetInstance("https://resgn-of-arrow-default-rtdb.firebaseio.com/").RootReference;
+                this.Auth              = FirebaseAuth.DefaultInstance;
+                this.DatabaseReference = FirebaseDatabase.GetInstance(this.authenticationSetting.FirebaseDatabaseURL).RootReference;
             }
             else
             {
@@ -39,14 +56,14 @@ namespace UITemplate.Authentication
 
         public async UniTask Login(string email, string password, Action onLoginSuccess = null, Action onLoginFailed = null)
         {
-            if (this.FirebaseAuth == null)
+            if (this.Auth == null)
             {
                 Debug.LogError("FirebaseAuth is not initialized.");
 
                 return;
             }
 
-            var loginTask = this.FirebaseAuth.SignInWithEmailAndPasswordAsync(email, password);
+            var loginTask = this.Auth.SignInWithEmailAndPasswordAsync(email, password);
 
             try
             {
@@ -54,9 +71,9 @@ namespace UITemplate.Authentication
                 var loginResult = await loginTask;
 
                 // User is now logged in, now get the result
-                this.FirebaseUser = loginResult.User;
+                this.User = loginResult.User;
                 onLoginSuccess?.Invoke();
-                Debug.LogFormat("User signed in successfully: {0} ({1})", this.FirebaseUser.DisplayName, this.FirebaseUser.Email);
+                Debug.LogFormat("User signed in successfully: {0} ({1})", this.User.DisplayName, this.User.Email);
             }
             catch (Exception e)
             {
@@ -85,7 +102,7 @@ namespace UITemplate.Authentication
             try
             {
                 //Call the Firebase auth create user function passing the email and password
-                var registerTask = this.FirebaseAuth.CreateUserWithEmailAndPasswordAsync(email, password);
+                var registerTask = this.Auth.CreateUserWithEmailAndPasswordAsync(email, password);
                 //Wait until the task completes
                 await registerTask;
 
@@ -111,15 +128,15 @@ namespace UITemplate.Authentication
                 }
                 else
                 {
-                    this.FirebaseUser = registerTask.Result.User;
+                    this.User = registerTask.Result.User;
 
-                    if (this.FirebaseUser != null)
+                    if (this.User != null)
                     {
                         //Create a user profile and set the username
                         var profile = new UserProfile { DisplayName = username };
 
                         //Call the Firebase auth update user profile function passing the profile with the username
-                        var profileTask = this.FirebaseUser.UpdateUserProfileAsync(profile);
+                        var profileTask = this.User.UpdateUserProfileAsync(profile);
                         //Wait until the task completes
                         await profileTask;
 
@@ -146,6 +163,82 @@ namespace UITemplate.Authentication
             {
                 Debug.LogWarning($"Failed to register task with {e}");
                 onRegisterFalse?.Invoke();
+            }
+        }
+
+        public void Logout(Action onLogoutSuccess = null, Action onLogoutFailed = null)
+        {
+            try
+            {
+                this.Auth.SignOut();
+                this.User = null;
+                onLogoutSuccess?.Invoke();
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"Failed to logout task with {e}");
+                onLogoutFailed?.Invoke();
+            }
+        }
+
+        public async UniTask LoginWithGoogle(Action onLoginSuccess = null, Action onLoginFailed = null)
+        {
+            try
+            {
+                GoogleSignIn.Configuration                = this.googleSignInConfiguration;
+                GoogleSignIn.Configuration.UseGameSignIn  = false;
+                GoogleSignIn.Configuration.RequestIdToken = true;
+                GoogleSignIn.Configuration.RequestEmail   = true;
+
+                var signInTask = GoogleSignIn.DefaultInstance.SignIn();
+                await signInTask.ContinueWith(OnGoogleAuthenticatedFinished);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Exception during Google Sign-In: {ex.Message}");
+                onLoginFailed?.Invoke();
+            }
+
+            return;
+
+            void OnGoogleAuthenticatedFinished(Task<GoogleSignInUser> task)
+            {
+                if (task.IsFaulted)
+                {
+                    Debug.LogError("Google Sign-In failed: " + task.Exception);
+                    onLoginFailed?.Invoke();
+                }
+                else if (task.IsCanceled)
+                {
+                    Debug.LogError("Google Sign-In was canceled.");
+                    onLoginFailed?.Invoke();
+                }
+                else
+                {
+                    var credential = GoogleAuthProvider.GetCredential(task.Result.IdToken, null);
+
+                    this.Auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(task1 =>
+                    {
+                        if (task1.IsCanceled)
+                        {
+                            Debug.LogError("SignInWithCredentialAsync was canceled.");
+                            onLoginFailed?.Invoke();
+
+                            return;
+                        }
+
+                        if (task1.IsFaulted)
+                        {
+                            Debug.LogError("SignInWithCredentialAsync encountered an error: " + task1.Exception);
+                            onLoginFailed?.Invoke();
+
+                            return;
+                        }
+
+                        this.User = this.Auth.CurrentUser;
+                        onLoginSuccess?.Invoke();
+                    });
+                }
             }
         }
     }

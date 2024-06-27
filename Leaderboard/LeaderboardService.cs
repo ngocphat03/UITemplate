@@ -28,8 +28,8 @@ namespace UITemplate.Leaderboard
 
         public void UpdateInfo()
         {
-            this.FirebaseAuth = this.authenticationService.FirebaseAuth;
-            this.FirebaseUser = this.authenticationService.FirebaseUser;
+            this.FirebaseAuth = this.authenticationService.Auth;
+            this.FirebaseUser = this.authenticationService.User;
             this.DatabaseReference = this.authenticationService.DatabaseReference;
 
             this.dataLeaderboards = new List<DataLeaderboard>();

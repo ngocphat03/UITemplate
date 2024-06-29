@@ -2,15 +2,14 @@
 namespace UITemplate.Authentication
 {
     using System;
-    using Zenject;
     using Google;
+    using Zenject;
     using Firebase;
     using UnityEngine;
     using Firebase.Auth;
     using Firebase.Database;
     using Firebase.Extensions;
     using System.Threading.Tasks;
-    using Cysharp.Threading.Tasks;
 
     public class AuthenticationService : IInitializable
     {
@@ -48,13 +47,13 @@ namespace UITemplate.Authentication
             }
         }
 
-        private async UniTask CheckAndFixDependenciesAsync()
+        private async Task CheckAndFixDependenciesAsync()
         {
             var dependencyTask = FirebaseApp.CheckAndFixDependenciesAsync();
             this.DependencyStatus = await dependencyTask;
         }
 
-        public async UniTask Login(string email, string password, Action onLoginSuccess = null, Action onLoginFailed = null)
+        public async Task Login(string email, string password, Action onLoginSuccess = null, Action onLoginFailed = null)
         {
             if (this.Auth == null)
             {
@@ -97,7 +96,7 @@ namespace UITemplate.Authentication
             }
         }
 
-        public async UniTask Register(string email, string password, string username, Action onRegisterSuccess = null, Action onRegisterFalse = null)
+        public async Task Register(string email, string password, string username, Action onRegisterSuccess = null, Action onRegisterFalse = null)
         {
             try
             {
@@ -181,45 +180,33 @@ namespace UITemplate.Authentication
             }
         }
 
-        public async UniTask LoginWithGoogle(Action onLoginSuccess = null, Action onLoginFailed = null)
+        public void LoginWithGoogle(Action onLoginSuccess = null, Action onLoginFailed = null)
         {
-            try
-            {
-                GoogleSignIn.Configuration                = this.googleSignInConfiguration;
-                GoogleSignIn.Configuration.UseGameSignIn  = false;
-                GoogleSignIn.Configuration.RequestIdToken = true;
-                GoogleSignIn.Configuration.RequestEmail   = true;
+            GoogleSignIn.Configuration                = this.googleSignInConfiguration;
+            GoogleSignIn.Configuration.UseGameSignIn  = false;
+            GoogleSignIn.Configuration.RequestIdToken = true;
 
-                var signInTask = GoogleSignIn.DefaultInstance.SignIn();
-                await signInTask.ContinueWith(OnGoogleAuthenticatedFinished);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"Exception during Google Sign-In: {ex.Message}");
-                onLoginFailed?.Invoke();
-            }
+            _ = GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnAuthenticationFinished);
 
             return;
 
-            void OnGoogleAuthenticatedFinished(Task<GoogleSignInUser> task)
+            void OnAuthenticationFinished(Task<GoogleSignInUser> task)
             {
                 if (task.IsFaulted)
                 {
-                    Debug.LogError("Google Sign-In failed: " + task.Exception);
-                    onLoginFailed?.Invoke();
+                    Debug.LogError("Faulted");
                 }
                 else if (task.IsCanceled)
                 {
-                    Debug.LogError("Google Sign-In was canceled.");
-                    onLoginFailed?.Invoke();
+                    Debug.LogError("Cancelled");
                 }
                 else
                 {
                     var credential = GoogleAuthProvider.GetCredential(task.Result.IdToken, null);
 
-                    this.Auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(task1 =>
+                    this.Auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(tk =>
                     {
-                        if (task1.IsCanceled)
+                        if (tk.IsCanceled)
                         {
                             Debug.LogError("SignInWithCredentialAsync was canceled.");
                             onLoginFailed?.Invoke();
@@ -227,15 +214,14 @@ namespace UITemplate.Authentication
                             return;
                         }
 
-                        if (task1.IsFaulted)
+                        if (tk.IsFaulted)
                         {
-                            Debug.LogError("SignInWithCredentialAsync encountered an error: " + task1.Exception);
+                            Debug.LogError("SignInWithCredentialAsync encountered an error: " + tk.Exception);
                             onLoginFailed?.Invoke();
 
                             return;
                         }
 
-                        this.User = this.Auth.CurrentUser;
                         onLoginSuccess?.Invoke();
                     });
                 }

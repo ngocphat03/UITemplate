@@ -53,6 +53,15 @@ namespace UITemplate.Photon.Scripts
             PhotonNetwork.CreateRoom(nameRoom);
         }
 
+        public void JoinLobby() { PhotonNetwork.JoinLobby();}
+        public void LeaveLobby() { PhotonNetwork.LeaveLobby(); }
+
+        public void UpdateRoom()
+        {
+            if (PhotonNetwork.InLobby) PhotonNetwork.LeaveLobby();
+            PhotonNetwork.JoinLobby();
+        }
+
         public virtual void CreateCustom(string nameRoom, RoomOptions roomOptions, TypedLobby typedLobby, string[] expectedUsers)
         {
             Debug.Log($"Create custom room with parameter: nameRoom: {nameRoom}, roomOptions: {roomOptions}, typedLobby: {typedLobby}, expectedUsers: {expectedUsers}");
@@ -63,6 +72,11 @@ namespace UITemplate.Photon.Scripts
         {
             Debug.Log(": Join Room " + nameRoom);
             PhotonNetwork.JoinRoom(nameRoom);
+        }
+
+        public virtual void CheckAndJoin(string nameRoom, string password)
+        {
+
         }
 
         public virtual void LeaveRoom()
@@ -98,6 +112,7 @@ namespace UITemplate.Photon.Scripts
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
         {
             Debug.Log("OnRoomListUpdate" + roomList.Count);
+            roomList.ForEach(room => Debug.LogFormat($"Name room: {room.Name}"));
             this.ListRoom = roomList;
             this.SignalBus.Fire(new OnUpdateRoomSignal(listRoom: this.ListRoom));
         }
@@ -114,9 +129,7 @@ namespace UITemplate.Photon.Scripts
 
         public void GetCustomRoomList(string sqlLobbyFilter)
         {
-            // PhotonNetwork.GetCustomRoomList(new TypedLobby(nameof(EPrivacySetting.Public), LobbyType.SqlLobby), sqlLobbyFilter);
-            
-            PhotonNetwork.GetCustomRoomList(PhotonNetwork.CurrentLobby, "C0 = 'Public'");
+            PhotonNetwork.GetCustomRoomList(TypedLobby.Default, sqlLobbyFilter);
         }
 
         #endregion

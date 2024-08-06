@@ -1,6 +1,6 @@
-﻿namespace UITemplate.Scripts.Screens.Base
+﻿namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Base
 {
-    using UITemplate.Scripts.Interface;
+    using AXitUnityTemplate.ScreenTemplate.Scripts.Interface;
 
     public abstract class UITemplateBaseScreenPresenter<TView> : BaseScreenPresenter<TView> where TView : IScreenView
     {

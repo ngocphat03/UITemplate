@@ -1,9 +1,9 @@
 ﻿namespace UITemplate.Scripts.Extension
 {
     using System;
+    using AXitUnityTemplate.ScreenTemplate.Scripts.Interface;
     using UITemplate.Scripts.Extension.Ulties;
     using UnityEngine;
-    using UITemplate.Scripts.Interface;
     using Zenject;
 
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]

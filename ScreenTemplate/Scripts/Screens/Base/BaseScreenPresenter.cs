@@ -1,12 +1,12 @@
-﻿namespace UITemplate.Scripts.Screens.Base
+namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Base
 {
     using System;
-    using Cysharp.Threading.Tasks;
-    using UITemplate.Scripts.Interface;
     using UnityEngine;
+    using Cysharp.Threading.Tasks;
     using UnityEngine.SceneManagement;
+    using AXitUnityTemplate.ScreenTemplate.Scripts.Interface;
 
-    public abstract class BasePopupPresenter<TView> : IScreenPresenter where TView : IScreenView
+    public abstract class BaseScreenPresenter<TView> : IScreenPresenter where TView : IScreenView
     {
         public string                   ScreenId     { get; private set; }
         public ScreenStatus             ScreenStatus { get; protected set; } = ScreenStatus.Closed;
@@ -14,7 +14,7 @@
 
         public TView View;
 
-        public async void SetView(IScreenView viewInstance, Action<IScreenPresenter> onClose = null)
+        public  async void SetView(IScreenView viewInstance, Action<IScreenPresenter> onClose = null)
         {
             this.View        = (TView)viewInstance;
             this.ScreenId    = $"{SceneManager.GetActiveScene().name}/{typeof(TView).Name}";
@@ -26,7 +26,7 @@
             else
             {
                 await UniTask.WaitUntil(() => this.View.IsReadyToUse);
-                this.OnViewReady();         
+                this.OnViewReady();
             }
         }
 
@@ -90,10 +90,9 @@
             this.Dispose();
             this.View.DestroySelf();
         }
-
     }
 
-    public abstract class BasePopupPresenter<TView, TModel> : BasePopupPresenter<TView>, IScreenPresenter where TView : IScreenView
+    public abstract class BaseScreenPresenter<TView, TModel> : BaseScreenPresenter<TView>, IScreenPresenter<TModel> where TView : IScreenView
     {
         protected TModel Model;
 

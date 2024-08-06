@@ -31,11 +31,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3995447184307923757}
+  m_Father: {fileID: 5662783796286491828}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 400.9789, y: 287.63513}
+  m_AnchoredPosition: {x: 400.91885, y: 287.63513}
   m_SizeDelta: {x: 97.0119, y: 96.0598}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5569982078863614676
@@ -539,7 +539,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2714032404549022668}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -547,12 +547,12 @@ RectTransform:
   - {fileID: 7156789708066688073}
   - {fileID: 2775330340504516641}
   - {fileID: 7147220978869936743}
-  m_Father: {fileID: 3995447184307923757}
+  m_Father: {fileID: 5662783796286491828}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.053629633, y: 0.37739584}
   m_AnchorMax: {x: 0.9467409, y: 0.61189574}
-  m_AnchoredPosition: {x: 0.19921875, y: -1.9284973}
-  m_SizeDelta: {x: -0.35, y: 1.1630993}
+  m_AnchoredPosition: {x: 0.1496582, y: -8.124786}
+  m_SizeDelta: {x: 50.235817, y: 272.54517}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1700092298019113175
 MonoBehaviour:
@@ -853,7 +853,9 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2429045702064564802}
+  - {fileID: 1962606326221572946}
   m_Father: {fileID: 3995447184307923757}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.026740741, y: 0.30241674}
@@ -2267,12 +2269,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8074505057722217858, guid: 4bddd30fbc719f048b5f9b6179c7c671, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7570685474000768794}
-    - targetCorrespondingSourceObject: {fileID: 8074505057722217858, guid: 4bddd30fbc719f048b5f9b6179c7c671, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1962606326221572946}
-    - targetCorrespondingSourceObject: {fileID: 8074505057722217858, guid: 4bddd30fbc719f048b5f9b6179c7c671, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2429045702064564802}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6181746808265217129, guid: 4bddd30fbc719f048b5f9b6179c7c671, type: 3}
       insertIndex: -1
@@ -2301,7 +2297,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewRoot: {fileID: 281089629734294932}
-  blocksRaycasts: 1
+  screenTransition: {fileID: 0}
+  blockRaycastHit: 1
   sliderMusic: {fileID: 5319932987420637114}
   sliderSound: {fileID: 7595073687423510139}
   buttonClose: {fileID: 1707334382428407859}

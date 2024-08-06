@@ -1,8 +1,8 @@
-namespace UITemplate.Scripts.Interface
+namespace AXitUnityTemplate.ScreenTemplate.Scripts.Interface
 {
     using System;
-    using Cysharp.Threading.Tasks;
     using UnityEngine;
+    using Cysharp.Threading.Tasks;
 
     public interface IScreenPresenter
     {

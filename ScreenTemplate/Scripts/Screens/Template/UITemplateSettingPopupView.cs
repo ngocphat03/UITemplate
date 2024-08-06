@@ -1,9 +1,9 @@
-﻿namespace UITemplate.Scripts.Screens.Template
+﻿namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
 {
+    using AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Base;
     using Cysharp.Threading.Tasks;
     using UITemplate.Scripts.Extension;
     using UITemplate.Scripts.Extension.Sound;
-    using UITemplate.Scripts.Screens.Base;
     using UnityEngine.UI;
 
     public class UITemplateSettingPopupView : BaseView
@@ -30,7 +30,7 @@
 
         public override UniTask BindData() { return UniTask.CompletedTask; }
 
-        protected virtual void OnClose() {this.CloseView(); }
+        protected virtual void OnClose() { this.CloseViewAsync().Forget(); }
 
         protected virtual void OnMusicValueChanged(float value) { this.soundManager.ChangeVolumeMusic(value); }
 

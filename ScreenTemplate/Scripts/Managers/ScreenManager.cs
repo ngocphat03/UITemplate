@@ -4,8 +4,8 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Collections.Generic;
+    using AXitUnityTemplate.ScreenTemplate.Scripts.Interface;
     using UITemplate.Scripts.Extension;
-    using UITemplate.Scripts.Interface;
     using Cysharp.Threading.Tasks;
     using UnityEngine;
     using Zenject;

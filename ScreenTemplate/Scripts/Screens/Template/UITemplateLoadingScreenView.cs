@@ -1,11 +1,11 @@
-namespace UITemplate.Scripts.Screens.Template
+namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
 {
+    using AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Base;
     using Cysharp.Threading.Tasks;
     using DG.Tweening;
     using TMPro;
     using UITemplate.Scripts.Extension;
     using UITemplate.Scripts.Extension.ObjectPool;
-    using UITemplate.Scripts.Screens.Base;
     using UnityEngine;
     using UnityEngine.ResourceManagement.AsyncOperations;
     using UnityEngine.ResourceManagement.ResourceProviders;
@@ -55,14 +55,14 @@ namespace UITemplate.Scripts.Screens.Template
     {
         protected IGameAssets GameAssets;
         private   float       loadingProgress;
-        private   int         loadingSteps;
+        private   int         loadingSteps = 1;
         private   GameObject  objectPoolContainer;
 
         protected virtual string NextSceneName => "1.MainScene";
 
         private float LoadingProgress
         {
-            get => this.loadingProgress;
+            get => this.loadingProgress;    
             set
             {
                 this.loadingProgress = value;
@@ -79,7 +79,6 @@ namespace UITemplate.Scripts.Screens.Template
             Object.DontDestroyOnLoad(this.objectPoolContainer);
 
             this.LoadingProgress       = 0f;
-            this.loadingSteps          = 1;
 
             await UniTask.WhenAll(
                 this.Preload(),

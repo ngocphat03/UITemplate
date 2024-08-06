@@ -1,9 +1,9 @@
-namespace UITemplate.Scripts.Screens.Template
+namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
 {
+    using UnityEngine.UI;
     using Cysharp.Threading.Tasks;
     using UITemplate.Scripts.Extension;
-    using UITemplate.Scripts.Screens.Base;
-    using UnityEngine.UI;
+    using AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Base;
 
     [ScreenPresenter(typeof(UITemplateHomeScreenPresenter))]
     public class UITemplateHomeScreenView : BaseView

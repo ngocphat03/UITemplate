@@ -1,5 +1,5 @@
 ﻿#if LEADERBOARD
-namespace UITemplate.Leaderboard.Data
+namespace AXitUnityTemplate.Networking.Firebase.Leaderboard.Data
 {
     public class DataLeaderboard
     {

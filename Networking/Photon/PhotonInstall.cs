@@ -1,11 +1,11 @@
 ﻿#if PHOTON
-namespace UITemplate.Photon
+namespace AXitUnityTemplate.Networking.Photon
 {
+    using AXitUnityTemplate.Networking.Photon.Scripts;
+    using Zenject;
     using UITemplate.Photon.Data;
     using UITemplate.Photon.Scripts;
     using UITemplate.Photon.Signals;
-    using UnityEngine;
-    using Zenject;
 
     public class PhotonInstall : Installer<PhotonInstall>
     {
@@ -14,7 +14,8 @@ namespace UITemplate.Photon
             this.Container.BindInterfacesAndSelfTo<UITemplatePhotonRoomService>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
             this.Container.BindInterfacesAndSelfTo<UITemplatePhotonTurnController>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
             this.Container.BindInterfacesAndSelfTo<DataRealTimeManager>().AsSingle().NonLazy();
-            
+            this.Container.BindInterfacesAndSelfTo<PhotonEventManager>().AsSingle().NonLazy();
+
             this.Container.DeclareSignal<OnCreateRoomSignal>();
             this.Container.DeclareSignal<OnUpdateRoomSignal>();
             this.Container.DeclareSignal<StartOnlineGameSignal>();

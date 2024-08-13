@@ -1,6 +1,7 @@
 ﻿#if FIREBASE && LEADERBOARD
 namespace UITemplate.Leaderboard
 {
+    using System;
     using Zenject;
     using Firebase;
     using System.Linq;
@@ -9,8 +10,8 @@ namespace UITemplate.Leaderboard
     using Firebase.Database;
     using Cysharp.Threading.Tasks;
     using System.Collections.Generic;
-    using UITemplate.Authentication;
-    using UITemplate.Leaderboard.Data;
+    using AXitUnityTemplate.Networking.Firebase.Authentication;
+    using AXitUnityTemplate.Networking.Firebase.Leaderboard.Data;
 
     public class LeaderboardService : IInitializable
     {
@@ -40,7 +41,10 @@ namespace UITemplate.Leaderboard
             try
             {
                 var json = JsonUtility.ToJson(dataLeaderboard);
-                await this.DatabaseReference.Child("leaderboards").Child(this.FirebaseUser.UserId).SetRawJsonValueAsync(json);
+                await this.DatabaseReference
+                          .Child("leaderboards")
+                          .Child(this.FirebaseUser.UserId)
+                          .SetRawJsonValueAsync(json);
                 Debug.Log("Leaderboard data saved successfully.");
             }
             catch (FirebaseException ex)

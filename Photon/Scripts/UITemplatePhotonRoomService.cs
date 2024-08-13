@@ -29,6 +29,8 @@ namespace UITemplate.Photon.Scripts
         public bool IsMasterRoom => PhotonNetwork.IsMasterClient;
         public int  ActorNumber  => PhotonNetwork.LocalPlayer.ActorNumber;
 
+        public int CountPlayerInRoom => PhotonNetwork.PlayerList.Length;
+
         public void Initialize()
         {
             Debug.Log($"Photon status: {PhotonNetwork.NetworkClientState.ToString()}");
@@ -53,7 +55,8 @@ namespace UITemplate.Photon.Scripts
             PhotonNetwork.CreateRoom(nameRoom);
         }
 
-        public void JoinLobby() { PhotonNetwork.JoinLobby();}
+        public void JoinLobby() { PhotonNetwork.JoinLobby(); }
+
         public void LeaveLobby() { PhotonNetwork.LeaveLobby(); }
 
         public void UpdateRoom()
@@ -74,10 +77,7 @@ namespace UITemplate.Photon.Scripts
             PhotonNetwork.JoinRoom(nameRoom);
         }
 
-        public virtual void CheckAndJoin(string nameRoom, string password)
-        {
-
-        }
+        public virtual void CheckAndJoin(string nameRoom, string password) { }
 
         public virtual void LeaveRoom()
         {
@@ -127,10 +127,7 @@ namespace UITemplate.Photon.Scripts
             PhotonNetwork.JoinLobby();
         }
 
-        public void GetCustomRoomList(string sqlLobbyFilter)
-        {
-            PhotonNetwork.GetCustomRoomList(TypedLobby.Default, sqlLobbyFilter);
-        }
+        public void GetCustomRoomList(string sqlLobbyFilter) { PhotonNetwork.GetCustomRoomList(TypedLobby.Default, sqlLobbyFilter); }
 
         #endregion
     }

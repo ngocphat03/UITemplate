@@ -1,15 +1,15 @@
 ﻿#if FIREBASE && AUTHENTICATION
-namespace UITemplate.Authentication
+namespace AXitUnityTemplate.Networking.Firebase.Authentication
 {
     using System;
     using Google;
     using Zenject;
-    using Firebase;
     using UnityEngine;
-    using Firebase.Auth;
-    using Firebase.Database;
-    using Firebase.Extensions;
+    using global::Firebase;
+    using global::Firebase.Auth;
     using System.Threading.Tasks;
+    using global::Firebase.Database;
+    using global::Firebase.Extensions;
 
     public class AuthenticationService : IInitializable
     {
@@ -28,7 +28,7 @@ namespace UITemplate.Authentication
 
             if (this.authenticationSetting == null) throw new Exception($"Cannot find AuthenticationSetting in Resources folder");
 
-            await this.CheckAndFixDependenciesAsync();
+            this.DependencyStatus = await FirebaseApp.CheckAndFixDependenciesAsync();
 
             this.googleSignInConfiguration = new GoogleSignInConfiguration
             {
@@ -45,12 +45,6 @@ namespace UITemplate.Authentication
             {
                 Debug.LogError($"Could not resolve all Firebase dependencies: {this.DependencyStatus}");
             }
-        }
-
-        private async Task CheckAndFixDependenciesAsync()
-        {
-            var dependencyTask = FirebaseApp.CheckAndFixDependenciesAsync();
-            this.DependencyStatus = await dependencyTask;
         }
 
         public async Task Login(string email, string password, Action onLoginSuccess = null, Action onLoginFailed = null)

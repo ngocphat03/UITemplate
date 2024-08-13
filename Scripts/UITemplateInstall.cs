@@ -1,5 +1,7 @@
 namespace UITemplate.Scripts
 {
+    using AXitUnityTemplate.Networking.Firebase;
+    using AXitUnityTemplate.Networking.Firebase.Authentication;
     using UITemplate.Scripts.Extension;
     using UITemplate.Scripts.Extension.ObjectPool;
     using UITemplate.Scripts.Extension.StateMachine.Signal;
@@ -29,19 +31,15 @@ namespace UITemplate.Scripts
         private void InstallOther()
         {
 #if PHOTON
-            UITemplate.Photon.PhotonInstall.Install(this.Container);
 #endif
             
 #if ADS_SERVICE
             UITemplate.AdsService.AdsServiceInstall.Install(this.Container);
 #endif
 
-#if FIREBASE && AUTHENTICATION
-            UITemplate.Authentication.AuthenticationInstall.Install(this.Container);
-#endif
-
 #if FIREBASE && LEADERBOARD
             Leaderboard.LeaderboardInstall.Install(this.Container);
+            FirebaseInstall.Install(this.Container);
 #endif
         }
     }

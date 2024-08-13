@@ -1,5 +1,5 @@
 ﻿#if FIREBASE && AUTHENTICATION
-namespace UITemplate.Authentication
+namespace AXitUnityTemplate.Networking.Firebase.Authentication
 {
     using Zenject;
 

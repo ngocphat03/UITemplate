@@ -1,4 +1,4 @@
-﻿namespace AXitUnityTemplate.Networking.Firebase.Database
+﻿namespace AXitUnityTemplate.Networking.FirebaseNetwork.Database
 {
     public class DatabasePaths
     {

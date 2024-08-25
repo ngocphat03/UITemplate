@@ -1,8 +1,8 @@
-﻿namespace AXitUnityTemplate.Networking.Firebase
+﻿namespace AXitUnityTemplate.Networking.FirebaseNetwork
 {
     using Zenject;
-    using AXitUnityTemplate.Networking.Firebase.Database;
-    using AXitUnityTemplate.Networking.Firebase.Authentication;
+    using AXitUnityTemplate.Networking.FirebaseNetwork.Database;
+    using AXitUnityTemplate.Networking.FirebaseNetwork.Authentication;
 
     public class FirebaseInstall : Installer<FirebaseInstall>
     {

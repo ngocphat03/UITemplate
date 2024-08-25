@@ -1,15 +1,14 @@
 ﻿#if FIREBASE && AUTHENTICATION
-namespace AXitUnityTemplate.Networking.Firebase.Authentication
+namespace AXitUnityTemplate.Networking.FirebaseNetwork.Authentication
 {
     using System;
     using Google;
     using Zenject;
+    using Firebase;
     using UnityEngine;
-    using global::Firebase;
-    using global::Firebase.Auth;
+    using Firebase.Auth;
+    using Firebase.Database;
     using System.Threading.Tasks;
-    using global::Firebase.Database;
-    using global::Firebase.Extensions;
 
     public class AuthenticationService : IInitializable
     {
@@ -45,6 +44,11 @@ namespace AXitUnityTemplate.Networking.Firebase.Authentication
             {
                 Debug.LogError($"Could not resolve all Firebase dependencies: {this.DependencyStatus}");
             }
+        }
+        
+        public void SetUser(FirebaseUser user)
+        {
+            this.User = user;
         }
 
         public async Task Login(string email, string password, Action onLoginSuccess = null, Action onLoginFailed = null)
@@ -174,52 +178,9 @@ namespace AXitUnityTemplate.Networking.Firebase.Authentication
             }
         }
 
-        public void LoginWithGoogle(Action onLoginSuccess = null, Action onLoginFailed = null)
+        public void SetAuth()
         {
-            GoogleSignIn.Configuration                = this.googleSignInConfiguration;
-            GoogleSignIn.Configuration.UseGameSignIn  = false;
-            GoogleSignIn.Configuration.RequestIdToken = true;
-
-            _ = GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnAuthenticationFinished);
-
-            return;
-
-            void OnAuthenticationFinished(Task<GoogleSignInUser> task)
-            {
-                if (task.IsFaulted)
-                {
-                    Debug.LogError("Faulted");
-                }
-                else if (task.IsCanceled)
-                {
-                    Debug.LogError("Cancelled");
-                }
-                else
-                {
-                    var credential = GoogleAuthProvider.GetCredential(task.Result.IdToken, null);
-
-                    this.Auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(tk =>
-                    {
-                        if (tk.IsCanceled)
-                        {
-                            Debug.LogError("SignInWithCredentialAsync was canceled.");
-                            onLoginFailed?.Invoke();
-
-                            return;
-                        }
-
-                        if (tk.IsFaulted)
-                        {
-                            Debug.LogError("SignInWithCredentialAsync encountered an error: " + tk.Exception);
-                            onLoginFailed?.Invoke();
-
-                            return;
-                        }
-
-                        onLoginSuccess?.Invoke();
-                    });
-                }
-            }
+            
         }
     }
 }

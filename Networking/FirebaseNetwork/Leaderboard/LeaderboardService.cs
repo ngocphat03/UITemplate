@@ -1,17 +1,16 @@
 ﻿#if FIREBASE && LEADERBOARD
-namespace UITemplate.Leaderboard
+namespace AXitUnityTemplate.Networking.FirebaseNetwork.Leaderboard
 {
-    using System;
-    using Zenject;
-    using Firebase;
-    using System.Linq;
-    using UnityEngine;
-    using Firebase.Auth;
-    using Firebase.Database;
-    using Cysharp.Threading.Tasks;
     using System.Collections.Generic;
-    using AXitUnityTemplate.Networking.Firebase.Authentication;
-    using AXitUnityTemplate.Networking.Firebase.Leaderboard.Data;
+    using System.Linq;
+    using AXitUnityTemplate.Networking.FirebaseNetwork.Authentication;
+    using AXitUnityTemplate.Networking.FirebaseNetwork.Leaderboard.Data;
+    using Cysharp.Threading.Tasks;
+    using global::Firebase;
+    using global::Firebase.Auth;
+    using global::Firebase.Database;
+    using UnityEngine;
+    using Zenject;
 
     public class LeaderboardService : IInitializable
     {

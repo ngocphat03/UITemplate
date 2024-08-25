@@ -1,17 +1,17 @@
-﻿namespace AXitUnityTemplate.Networking.Firebase.Database.UserProfile
+﻿namespace AXitUnityTemplate.Networking.FirebaseNetwork.Database.UserProfile
 {
     using System;
-    using UnityEngine;
-    using global::Firebase;
-    using global::Firebase.Auth;
-    using System.Threading.Tasks;
-    using global::Firebase.Database;
     using System.Collections.Generic;
     using System.Linq;
-    using AXitUnityTemplate.Networking.Firebase.Authentication;
-    using AXitUnityTemplate.Networking.Firebase.Database.UserProfile.Data;
-    using AXitUnityTemplate.Scripts.Extension;
+    using System.Threading.Tasks;
+    using AXitUnityTemplate.Networking.FirebaseNetwork.Authentication;
+    using AXitUnityTemplate.Networking.FirebaseNetwork.Database;
+    using AXitUnityTemplate.Networking.FirebaseNetwork.Database.UserProfile.Data;
+    using global::Firebase;
+    using global::Firebase.Auth;
+    using global::Firebase.Database;
     using Newtonsoft.Json;
+    using UnityEngine;
     using Zenject;
 
     public class UserProfileManager : IInitializable
@@ -25,9 +25,10 @@
         public FirebaseAuth FirebaseAuth { get; private set; }
         public FirebaseUser FirebaseUser { get; private set; }
 
+        public User CurrentUser;
+
         public async Task AddUserProfile(User user)
         {
-            return;
             try
             {
                 var json = JsonConvert.SerializeObject(user);
@@ -58,6 +59,7 @@
                                          .Child(DatabasePaths.Users)
                                          .Child(userId)
                                          .GetValueAsync();
+
                 if (!snapshot.Exists)
                 {
                     Debug.LogError("No user profile data found.");
@@ -65,15 +67,22 @@
                     return null;
                 }
 
-                var user = this.Deserialize<User>(snapshot);
+                // Serialize snapshot value to JSON
+                var json = JsonConvert.SerializeObject(snapshot.Value);
+                Debug.Log(json);
+
+                // Deserialize JSON to User object
+                var user = JsonConvert.DeserializeObject<User>(json);
                 Debug.Log("User profile loaded successfully.");
 
                 return user;
             }
-            catch (FirebaseException ex)
+            catch (FirebaseException)
             {
-                Debug.LogError($"Failed to load user profile with {ex}");
-
+                return null;
+            }
+            catch (Exception)
+            {
                 return null;
             }
         }
@@ -169,11 +178,7 @@
             this.databaseReference = this.authenticationService.DatabaseReference;
         }
 
-        public async void Initialize()
-        {
-            // this.UpdateInfo();
-            // var userProfile = await this.LoadUserProfile("phatdeptrai");
-        }
+        public async void Initialize() { }
 
         private T Deserialize<T>(DataSnapshot snapshot) => JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(snapshot.Value));
     }

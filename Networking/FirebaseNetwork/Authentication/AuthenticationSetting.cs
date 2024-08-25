@@ -1,4 +1,4 @@
-﻿namespace AXitUnityTemplate.Networking.Firebase.Authentication
+﻿namespace AXitUnityTemplate.Networking.FirebaseNetwork.Authentication
 {
     using UnityEngine;
 

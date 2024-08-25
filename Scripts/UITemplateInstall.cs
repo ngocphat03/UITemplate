@@ -1,7 +1,6 @@
 namespace UITemplate.Scripts
 {
-    using AXitUnityTemplate.Networking.Firebase;
-    using AXitUnityTemplate.Networking.Firebase.Authentication;
+    using AXitUnityTemplate.Networking.FirebaseNetwork;
     using UITemplate.Scripts.Extension;
     using UITemplate.Scripts.Extension.ObjectPool;
     using UITemplate.Scripts.Extension.StateMachine.Signal;

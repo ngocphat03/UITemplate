@@ -1,7 +1,7 @@
-﻿namespace AXitUnityTemplate.Networking.Firebase.Database
+﻿namespace AXitUnityTemplate.Networking.FirebaseNetwork.Database
 {
+    using AXitUnityTemplate.Networking.FirebaseNetwork.Database.UserProfile;
     using Zenject;
-    using AXitUnityTemplate.Networking.Firebase.Database.UserProfile;
 
     public class DatabaseInstall : Installer<DatabaseInstall>
     {

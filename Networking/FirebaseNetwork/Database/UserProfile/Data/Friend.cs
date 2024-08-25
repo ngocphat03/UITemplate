@@ -1,4 +1,4 @@
-﻿namespace AXitUnityTemplate.Networking.Firebase.Database.UserProfile.Data
+﻿namespace AXitUnityTemplate.Networking.FirebaseNetwork.Database.UserProfile.Data
 {
     public class Friend
     {

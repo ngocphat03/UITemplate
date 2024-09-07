@@ -1,11 +1,11 @@
 ﻿#if PHOTON
 namespace AXitUnityTemplate.Networking.Photon
 {
-    using AXitUnityTemplate.Networking.Photon.Scripts;
     using Zenject;
     using UITemplate.Photon.Data;
     using UITemplate.Photon.Scripts;
     using UITemplate.Photon.Signals;
+    using AXitUnityTemplate.Networking.PhotonNetwork.Scripts;
 
     public class PhotonInstall : Installer<PhotonInstall>
     {

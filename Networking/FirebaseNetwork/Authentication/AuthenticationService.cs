@@ -9,16 +9,20 @@ namespace AXitUnityTemplate.Networking.FirebaseNetwork.Authentication
     using Firebase.Auth;
     using Firebase.Database;
     using System.Threading.Tasks;
+    using AXitUnityTemplate.Networking.FirebaseNetwork.Signals;
 
     public class AuthenticationService : IInitializable
     {
-        public DependencyStatus  DependencyStatus  { get; private set; }
-        public FirebaseAuth      Auth              { get; private set; }
-        public FirebaseUser      User              { get; private set; }
-        public DatabaseReference DatabaseReference { get; private set; }
+        private readonly SignalBus         signalBus;
+        public           DependencyStatus  DependencyStatus  { get; private set; }
+        public           FirebaseAuth      Auth              { get; private set; }
+        public           FirebaseUser      User              { get; private set; }
+        public           DatabaseReference DatabaseReference { get; private set; }
 
         private GoogleSignInConfiguration googleSignInConfiguration;
         private AuthenticationSetting     authenticationSetting;
+
+        public AuthenticationService(SignalBus signalBus) { this.signalBus = signalBus; }
 
         public async void Initialize()
         {
@@ -45,10 +49,11 @@ namespace AXitUnityTemplate.Networking.FirebaseNetwork.Authentication
                 Debug.LogError($"Could not resolve all Firebase dependencies: {this.DependencyStatus}");
             }
         }
-        
+
         public void SetUser(FirebaseUser user)
         {
             this.User = user;
+            this.signalBus.Fire(new FirebaseAuthenticationInitializedSignal(this.Auth, this.User, this.DatabaseReference));
         }
 
         public async Task Login(string email, string password, Action onLoginSuccess = null, Action onLoginFailed = null)
@@ -68,7 +73,7 @@ namespace AXitUnityTemplate.Networking.FirebaseNetwork.Authentication
                 var loginResult = await loginTask;
 
                 // User is now logged in, now get the result
-                this.User = loginResult.User;
+                this.SetUser(loginResult.User);
                 onLoginSuccess?.Invoke();
                 Debug.LogFormat("User signed in successfully: {0} ({1})", this.User.DisplayName, this.User.Email);
             }
@@ -125,7 +130,7 @@ namespace AXitUnityTemplate.Networking.FirebaseNetwork.Authentication
                 }
                 else
                 {
-                    this.User = registerTask.Result.User;
+                    this.SetUser(registerTask.Result.User);
 
                     if (this.User != null)
                     {
@@ -178,10 +183,7 @@ namespace AXitUnityTemplate.Networking.FirebaseNetwork.Authentication
             }
         }
 
-        public void SetAuth()
-        {
-            
-        }
+        public void SetAuth() { }
     }
 }
 #endif

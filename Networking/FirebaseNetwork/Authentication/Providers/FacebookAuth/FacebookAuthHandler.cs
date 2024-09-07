@@ -10,7 +10,6 @@ namespace AXitUnityTemplate.Networking.FirebaseNetwork.Authentication.Providers.
     using System.Collections.Generic;
     using AXitUnityTemplate.Networking.FirebaseNetwork.Authentication.Core;
     using AXitUnityTemplate.Networking.FirebaseNetwork.Database.UserProfile;
-    using AXitUnityTemplate.Networking.FirebaseNetwork.Database.UserProfile.Data;
 
     public class FacebookAuthHandler : IAuthProvider, IInitializable
     {
@@ -38,7 +37,7 @@ namespace AXitUnityTemplate.Networking.FirebaseNetwork.Authentication.Providers.
                         FB.ActivateApp();
                     else
                         Debug.Log("Failed to initialize the Facebook SDK");
-                }, isGameShown => Time.timeScale = isGameShown ? 1 : 0);
+                });
             }
             else
             {
@@ -88,11 +87,11 @@ namespace AXitUnityTemplate.Networking.FirebaseNetwork.Authentication.Providers.
             if (user == null)
             {
                 var listFriendsOnFacebook = await this.GetFacebookFriendsAsync();
-                await this.userProfileManager.AddUserProfile(new User
-                {
-                    UserId     = this.User.UserId,
-                    // FacebookId = this.fbUserId,
-                });
+                // await this.userProfileManager.AddUserProfile(new User
+                // {
+                //     UserId     = this.User.UserId,
+                //     FacebookId = this.fbUserId,
+                // });
             }
         }
 

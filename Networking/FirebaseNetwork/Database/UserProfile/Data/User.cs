@@ -13,11 +13,14 @@
 
         public User() { }
 
-        public User(string userId, string userName, int highScore)
+        public User(string userId, string userName, string facebookId, Dictionary<string, Item> inventory, List<Friend> friends, int highScore)
         {
-            this.UserId    = userId;
-            this.UserName  = userName;
-            this.HighScore = highScore;
+            this.UserId     = userId;
+            this.UserName   = userName;
+            this.FacebookId = facebookId;
+            this.Inventory  = inventory;
+            this.Friends    = friends;
+            this.HighScore  = highScore;
         }
     }
 }

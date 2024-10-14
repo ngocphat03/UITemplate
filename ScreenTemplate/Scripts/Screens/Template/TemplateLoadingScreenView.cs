@@ -1,5 +1,7 @@
 namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
 {
+    using AXitUnityTemplate.Blueprint.BlueprintControlFlow;
+    using AXitUnityTemplate.Blueprint.Signals;
     using TMPro;
     using UnityEngine;
     using DG.Tweening;
@@ -13,6 +15,7 @@ namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
     using UnityEngine.ResourceManagement.ResourceProviders;
     using AXitUnityTemplate.ScreenTemplate.Scripts.Utilities;
     using AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Base;
+    using Zenject;
 
     [ScreenPresenter(typeof(TemplateLoadingScreenPresenter))]
     public class TemplateLoadingScreenView : BaseView
@@ -55,10 +58,19 @@ namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
     [ScreenInfo(nameof(TemplateLoadingScreenView))]
     public class TemplateLoadingScreenPresenter : BaseScreenPresenter<TemplateLoadingScreenView>
     {
-        public TemplateLoadingScreenPresenter(IGameAssets gameAssets) { this.GameAssets = gameAssets; }
+        public TemplateLoadingScreenPresenter(IGameAssets            gameAssets,
+                                              SignalBus              signalBus,
+                                              BlueprintReaderManager blueprintReaderManager)
+        {
+            this.GameAssets             = gameAssets;
+            this.signalBus              = signalBus;
+            this.blueprintReaderManager = blueprintReaderManager;
+        }
 
-        protected virtual  string      NextSceneName => "1.MainScene";
-        protected readonly IGameAssets GameAssets;
+        protected virtual  string                 NextSceneName => "1.MainScene";
+        protected readonly IGameAssets            GameAssets;
+        private readonly   SignalBus              signalBus;
+        private readonly   BlueprintReaderManager blueprintReaderManager;
 
         private float      loadingProgress;
         private int        loadingSteps = 1;
@@ -86,6 +98,7 @@ namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
             await UniTask.WhenAll(
                 this.Preload(),
                 UniTask.WhenAll(
+                    this.LoadBlueprint().ContinueWith(this.OnBlueprintLoaded),
                     this.LoadUserData().ContinueWith(this.OnUserDataLoaded)
                 ).ContinueWith(this.OnBlueprintAndUserDataLoaded)
             ).ContinueWith(this.OnLoadingCompleted).ContinueWith(this.LoadNextScene);
@@ -102,11 +115,15 @@ namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
 
         protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.GameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false); }
 
-        private UniTask LoadUserData()
+        private UniTask LoadBlueprint()
         {
-            return UniTask.CompletedTask;
-            // return this.TrackProgress(this.userDataManager.LoadUserData());
+            this.TrackProgress<LoadBlueprintDataProgressSignal>();
+            this.TrackProgress<ReadBlueprintProgressSignal>();
+
+            return this.blueprintReaderManager.LoadBlueprint();
         }
+
+        private UniTask LoadUserData() { return UniTask.CompletedTask; }
 
         protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }
 
@@ -155,6 +172,22 @@ namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
 
                           return result;
                       });
+        }protected void TrackProgress<T>() where T : IProgressPercent
+        {
+            ++this.loadingSteps;
+            var localLoadingProgress = 0f;
+
+            this.signalBus.Subscribe<T>(UpdateProgress);
+
+            void UpdateProgress(T progress)
+            {
+                this.LoadingProgress += progress.Percent - localLoadingProgress;
+                localLoadingProgress =  progress.Percent;
+                if (progress.Percent >= 1f)
+                {
+                    this.signalBus.Unsubscribe<T>(UpdateProgress);
+                }
+            }
         }
     }
 }

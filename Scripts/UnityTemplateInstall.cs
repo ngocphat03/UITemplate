@@ -5,6 +5,7 @@ namespace AXitUnityTemplate.Scripts
     using AXitUnityTemplate.ObjectPool;
     using AXitUnityTemplate.StateMachine;
     using AXitUnityTemplate.ScreenTemplate.Scripts;
+    using AXitUnityTemplate.Blueprint.BlueprintControlFlow;
 
     public class UnityTemplateInstall : Installer<UnityTemplateInstall>
     {
@@ -16,6 +17,7 @@ namespace AXitUnityTemplate.Scripts
             GameAssetInstall.Install(this.Container);
             ObjectPoolInstall.Install(this.Container);
             ScreenTemplateInstall.Install(this.Container);
+            BlueprintServicesInstaller.Install(this.Container);
         }
     }
 }

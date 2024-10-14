@@ -4,7 +4,7 @@
     using UnityEngine.Playables;
     using Cysharp.Threading.Tasks;
     using UnityEngine.EventSystems;
-    using UITemplate.Scripts.Extension.Ulties;
+    using AXitUnityTemplate.Utilities;
 
     public class ScreenTransition : MonoBehaviour
     {

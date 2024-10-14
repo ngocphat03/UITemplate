@@ -178,7 +178,7 @@
             this.databaseReference = this.authenticationService.DatabaseReference;
         }
 
-        public async void Initialize() { }
+        public void Initialize() { }
 
         private T Deserialize<T>(DataSnapshot snapshot) => JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(snapshot.Value));
     }

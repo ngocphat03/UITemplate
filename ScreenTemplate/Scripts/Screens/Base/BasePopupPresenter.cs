@@ -19,15 +19,12 @@
             this.View        = (TView)viewInstance;
             this.ScreenId    = $"{SceneManager.GetActiveScene().name}/{typeof(TView).Name}";
             this.OnCloseView = onClose;
-            if (this.View.IsReadyToUse)
-            {
-                this.OnViewReady();
-            }
-            else
+            if (!this.View.IsReadyToUse)
             {
                 await UniTask.WaitUntil(() => this.View.IsReadyToUse);
-                this.OnViewReady();         
             }
+
+            this.OnViewReady();
         }
 
         protected virtual void OnViewReady() { }

@@ -1,15 +1,17 @@
-﻿namespace UITemplate.Scripts.Managers
+﻿namespace AXitUnityTemplate.ScreenTemplate.Scripts.Managers
 {
     using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Collections.Generic;
-    using AXitUnityTemplate.ScreenTemplate.Scripts.Interface;
-    using UITemplate.Scripts.Extension;
-    using Cysharp.Threading.Tasks;
-    using UnityEngine;
     using Zenject;
-    using UITemplate.Scripts.Extension.Ulties;
+    using System.Linq;
+    using UnityEngine;
+    using System.Threading.Tasks;
+    using Cysharp.Threading.Tasks;
+    using System.Collections.Generic;
+    using Object = UnityEngine.Object;
+    using AXitUnityTemplate.Utilities;
+    using AXitUnityTemplate.GameAssets.Interfaces;
+    using AXitUnityTemplate.ScreenTemplate.Scripts.Interface;
+    using AXitUnityTemplate.ScreenTemplate.Scripts.Utilities;
 
     public interface IScreenManager
     {
@@ -22,20 +24,22 @@
         public UniTask CloseCurrentScreen();
     }
 
-    public class ScreenManager : MonoBehaviour, IScreenManager, IDisposable
+    public class ScreenManager : MonoBehaviour, IScreenManager
     {
         [SerializeField] private Transform        screenOpen;
         [SerializeField] private Transform        screenClose;
         private                  IScreenPresenter activeScreens;
 
         private          IGameAssets                              gameAssets;
-        private readonly Dictionary<Type, IScreenPresenter>       typeToLoadedScreenPresenter = new Dictionary<Type, IScreenPresenter>();
-        private readonly Dictionary<Type, Task<IScreenPresenter>> typeToPendingScreen         = new Dictionary<Type, Task<IScreenPresenter>>();
+        private readonly Dictionary<Type, IScreenPresenter>       typeToLoadedScreenPresenter = new();
+        private readonly Dictionary<Type, Task<IScreenPresenter>> typeToPendingScreen         = new();
 
         [Inject]
-        public void Init(IGameAssets gameAsset) { this.gameAssets = gameAsset; }
-
-        private void Start() { this.ResearchScreen(); }
+        public void Init(IGameAssets gameAsset)
+        {
+            this.gameAssets = gameAsset;
+            this.ResearchScreen();
+        }
 
         public void ResearchScreen()
         {
@@ -66,9 +70,9 @@
             {
                 screenPresenter = this.GetCurrentContainer().Instantiate<T>();
                 var screenInfo = screenPresenter.GetCustomAttribute<ScreenInfoAttribute>();
-                var viewObject = Instantiate(await this.gameAssets.LoadAssetAsync<GameObject>(screenInfo.AddressableScreenPath), this.screenOpen).GetComponent<IScreenView>();
+                var viewObject = Object.Instantiate(await this.gameAssets.LoadAssetAsync<GameObject>(screenInfo.AddressableScreenPath), this.screenOpen).GetComponent<IScreenView>();
 
-                screenPresenter.SetView(viewObject);
+                screenPresenter.SetView(viewObject, this.CloseScreen);
                 this.typeToLoadedScreenPresenter.Add(screenType, screenPresenter);
 
                 return (T)screenPresenter;
@@ -92,17 +96,15 @@
 
                 return nextScreen;
             }
-            else
-            {
-                Debug.LogError($"The {typeof(T).Name} screen does not exist");
 
-                return default;
-            }
+            Debug.LogError($"The {typeof(T).Name} screen does not exist");
+
+            return default;
         }
 
         public async UniTask<TPresenter> OpenScreen<TPresenter, TModel>(TModel model) where TPresenter : IScreenPresenter<TModel>
         {
-            var nextScreen = (await this.GetScreen<TPresenter>());
+            var nextScreen = await this.GetScreen<TPresenter>();
 
             if (nextScreen != null)
             {
@@ -111,15 +113,12 @@
 
                 return nextScreen;
             }
-            else
-            {
-                Debug.LogError($"The {typeof(TPresenter).Name} screen does not exist");
 
-                // Need to implement lazy initialization by Load from resource
-                return default;
-            }
+            Debug.LogError($"The {typeof(TPresenter).Name} screen does not exist");
+
+            return default;
         }
-        
+
         public async UniTask<T> OpenPopup<T>() where T : IScreenPresenter
         {
             var nextScreen = await this.GetScreen<T>();
@@ -131,14 +130,12 @@
 
                 return nextScreen;
             }
-            else
-            {
-                Debug.LogError($"The {typeof(T).Name} screen does not exist");
 
-                return default;
-            }
+            Debug.LogError($"The {typeof(T).Name} screen does not exist");
+
+            return default;
         }
-        
+
         public async UniTask<TPresenter> OpenPopup<TPresenter, TModel>(TModel model) where TPresenter : IScreenPresenter<TModel>
         {
             var nextScreen = (await this.GetScreen<TPresenter>());
@@ -150,18 +147,16 @@
 
                 return nextScreen;
             }
-            else
-            {
-                Debug.LogError($"The {typeof(TPresenter).Name} screen does not exist");
 
-                // Need to implement lazy initialization by Load from resource
-                return default;
-            }
+            Debug.LogError($"The {typeof(TPresenter).Name} screen does not exist");
+
+            return default;
         }
 
         public async UniTask CloseCurrentScreen()
         {
             if (this.activeScreens is null) return;
+
             await this.activeScreens.CloseViewAsync();
         }
 
@@ -175,9 +170,7 @@
             this.typeToLoadedScreenPresenter.Add(typePresenter, screenPresenter);
             await screenPresenter.OpenViewAsync();
         }
-        
-        public IScreenPresenter GetCurrentScreen() { return this.activeScreens; }
 
-        public void Dispose() { }
+        public IScreenPresenter GetCurrentScreen() { return this.activeScreens; }
     }
 }

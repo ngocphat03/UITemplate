@@ -15,6 +15,7 @@ namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
     using UnityEngine.ResourceManagement.ResourceProviders;
     using AXitUnityTemplate.ScreenTemplate.Scripts.Utilities;
     using AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Base;
+    using AXitUnityTemplate.UserData.UserDataManager;
     using Zenject;
 
     [ScreenPresenter(typeof(TemplateLoadingScreenPresenter))]
@@ -58,13 +59,19 @@ namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
     [ScreenInfo(nameof(TemplateLoadingScreenView))]
     public class TemplateLoadingScreenPresenter : BaseScreenPresenter<TemplateLoadingScreenView>
     {
+        protected readonly UserDataManager userDataManager;
+        protected readonly UserLocalData userLocalData;
         public TemplateLoadingScreenPresenter(IGameAssets            gameAssets,
                                               SignalBus              signalBus,
-                                              BlueprintReaderManager blueprintReaderManager)
+                                              BlueprintReaderManager blueprintReaderManager,
+                                              UserDataManager userDataManager,
+                                              UserLocalData userLocalData)
         {
             this.GameAssets             = gameAssets;
             this.signalBus              = signalBus;
             this.blueprintReaderManager = blueprintReaderManager;
+            this.userDataManager        = userDataManager;
+            this.userLocalData          = userLocalData;
         }
 
         protected virtual  string                 NextSceneName => "1.MainScene";
@@ -123,7 +130,7 @@ namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
             return this.blueprintReaderManager.LoadBlueprint();
         }
 
-        private UniTask LoadUserData() { return UniTask.CompletedTask; }
+        private UniTask LoadUserData() { return this.TrackProgress(this.userDataManager.LoadUserData());  }
 
         protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }
 

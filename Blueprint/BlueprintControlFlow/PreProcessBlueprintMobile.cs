@@ -17,10 +17,11 @@ namespace AXitUnityTemplate.Blueprint.BlueprintControlFlow
 #if UNITY_ANDROID && !UNITY_EDITOR
         var output = await LoadStreamingAssetMobile(FileName);
         await this.MoveBlueprintToDevice(FileName, output);
-#endif
-#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+#elif UNITY_STANDALONE_WIN && !UNITY_EDITOR
         var output = await LoadStreamingAssetFromWindow(FileName);
         await this.MoveBlueprintToDevice(FileName, output);
+#elif UNITY_EDITOR
+        await UniTask.CompletedTask;
 #endif
         }
 

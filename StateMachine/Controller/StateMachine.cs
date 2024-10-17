@@ -7,14 +7,14 @@ namespace AXitUnityTemplate.StateMachine.Controller
     using AXitUnityTemplate.StateMachine.Signal;
     using AXitUnityTemplate.StateMachine.Interface;
 
-    public abstract class StateMachine : IStateMachine
+    public abstract class StateMachine : IStateMachine, ITickable
     {
         private readonly   SignalBus                signalBus;
         protected readonly Dictionary<Type, IState> TypeToState;
 
         protected StateMachine(
             List<IState> listState,
-            SignalBus signalBus
+            SignalBus    signalBus
         )
         {
             this.signalBus   = signalBus;
@@ -28,6 +28,7 @@ namespace AXitUnityTemplate.StateMachine.Controller
         public void TransitionTo<TState, TModel>(TModel model) where TState : class, IState<TModel>
         {
             var stateType = typeof(TState);
+
             if (!this.TypeToState.TryGetValue(stateType, out var nextState)) return;
 
             if (nextState is not TState nextStateT) return;
@@ -54,6 +55,12 @@ namespace AXitUnityTemplate.StateMachine.Controller
             this.CurrentState = nextState;
             this.signalBus.Fire(new OnStateEnterSignal(this.CurrentState));
             nextState.Enter();
+        }
+
+        public void Tick()
+        {
+            if (this.CurrentState is not ITickable tickableState) return;
+            tickableState.Tick();
         }
     }
 }

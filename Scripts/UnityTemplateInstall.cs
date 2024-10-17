@@ -1,6 +1,7 @@
 namespace AXitUnityTemplate.Scripts
 {
     using Zenject;
+    using AXitUnityTemplate.UserData;
     using AXitUnityTemplate.GameAssets;
     using AXitUnityTemplate.ObjectPool;
     using AXitUnityTemplate.StateMachine;
@@ -18,6 +19,7 @@ namespace AXitUnityTemplate.Scripts
             ObjectPoolInstall.Install(this.Container);
             ScreenTemplateInstall.Install(this.Container);
             BlueprintServicesInstaller.Install(this.Container);
+            UserDataInstall.Install(this.Container);
         }
     }
 }

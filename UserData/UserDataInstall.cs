@@ -1,12 +1,14 @@
 ﻿namespace AXitUnityTemplate.UserData
 {
     using System;
-    using Zenject;
-    using ModestTree;
     using AXitUnityTemplate.Utilities;
     using AXitUnityTemplate.UserData.Interfaces;
     using AXitUnityTemplate.UserData.UserDataManager;
+    using VContainer;
 
+#if ZENJECT
+    using Zenject;
+    using ModestTree;
     public class UserDataInstall : Installer<UserDataInstall>
     {
         public override void InstallBindings()
@@ -36,4 +38,18 @@
             this.Container.Bind<UserDataManager.UserDataManager>().AsCached();
         }
     }
+#elif VCONTAINER
+    public class UserDataInstall
+    {
+        public static void Install(IContainerBuilder builder)
+        {
+            // TODO: Declare signal (UserDataLoadedSignal)
+            builder.Register<HandleLocalUserDataServices>(Lifetime.Singleton).AsImplementedInterfaces();
+            ReflectionUtils.GetAllDerivedTypes<ILocalData>().ForEach(type => builder.Register(type, Lifetime.Singleton));
+            builder.Register<UserDataManager.UserDataManager>(Lifetime.Singleton);
+        }
+    }
+#else
+    // Mono
+#endif
 }

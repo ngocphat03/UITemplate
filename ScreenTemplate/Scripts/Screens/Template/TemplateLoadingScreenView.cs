@@ -1,7 +1,5 @@
 namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
 {
-    using AXitUnityTemplate.Blueprint.BlueprintControlFlow;
-    using AXitUnityTemplate.Blueprint.Signals;
     using TMPro;
     using UnityEngine;
     using DG.Tweening;
@@ -11,12 +9,12 @@ namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
     using UnityEngine.SceneManagement;
     using AXitUnityTemplate.ObjectPool;
     using AXitUnityTemplate.GameAssets.Interfaces;
+    using AXitUnityTemplate.UserData.UserDataManager;
     using UnityEngine.ResourceManagement.AsyncOperations;
+    using AXitUnityTemplate.Blueprint.BlueprintControlFlow;
     using UnityEngine.ResourceManagement.ResourceProviders;
     using AXitUnityTemplate.ScreenTemplate.Scripts.Utilities;
     using AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Base;
-    using AXitUnityTemplate.UserData.UserDataManager;
-    using Zenject;
 
     [ScreenPresenter(typeof(TemplateLoadingScreenPresenter))]
     public class TemplateLoadingScreenView : BaseView
@@ -59,25 +57,19 @@ namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
     [ScreenInfo(nameof(TemplateLoadingScreenView))]
     public class TemplateLoadingScreenPresenter : BaseScreenPresenter<TemplateLoadingScreenView>
     {
-        protected readonly UserDataManager userDataManager;
-        protected readonly UserLocalData userLocalData;
         public TemplateLoadingScreenPresenter(IGameAssets            gameAssets,
-                                              SignalBus              signalBus,
                                               BlueprintReaderManager blueprintReaderManager,
-                                              UserDataManager userDataManager,
-                                              UserLocalData userLocalData)
+                                              UserDataManager        userDataManager)
         {
             this.GameAssets             = gameAssets;
-            this.signalBus              = signalBus;
-            this.blueprintReaderManager = blueprintReaderManager;
-            this.userDataManager        = userDataManager;
-            this.userLocalData          = userLocalData;
+            this.BlueprintReaderManager = blueprintReaderManager;
+            this.UserDataManager        = userDataManager;
         }
 
         protected virtual  string                 NextSceneName => "1.MainScene";
+        protected readonly UserDataManager        UserDataManager;
         protected readonly IGameAssets            GameAssets;
-        private readonly   SignalBus              signalBus;
-        private readonly   BlueprintReaderManager blueprintReaderManager;
+        protected readonly BlueprintReaderManager BlueprintReaderManager;
 
         private float      loadingProgress;
         private int        loadingSteps = 1;
@@ -122,15 +114,9 @@ namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
 
         protected virtual AsyncOperationHandle<SceneInstance> LoadSceneAsync() { return this.GameAssets.LoadSceneAsync(this.NextSceneName, LoadSceneMode.Single, false); }
 
-        private UniTask LoadBlueprint()
-        {
-            this.TrackProgress<LoadBlueprintDataProgressSignal>();
-            this.TrackProgress<ReadBlueprintProgressSignal>();
+        private UniTask LoadBlueprint() { return this.BlueprintReaderManager.LoadBlueprint(); }
 
-            return this.blueprintReaderManager.LoadBlueprint();
-        }
-
-        private UniTask LoadUserData() { return this.TrackProgress(this.userDataManager.LoadUserData());  }
+        private UniTask LoadUserData() { return this.TrackProgress(this.UserDataManager.LoadUserData()); }
 
         protected virtual UniTask OnBlueprintLoaded() { return UniTask.CompletedTask; }
 
@@ -179,22 +165,6 @@ namespace AXitUnityTemplate.ScreenTemplate.Scripts.Screens.Template
 
                           return result;
                       });
-        }protected void TrackProgress<T>() where T : IProgressPercent
-        {
-            ++this.loadingSteps;
-            var localLoadingProgress = 0f;
-
-            this.signalBus.Subscribe<T>(UpdateProgress);
-
-            void UpdateProgress(T progress)
-            {
-                this.LoadingProgress += progress.Percent - localLoadingProgress;
-                localLoadingProgress =  progress.Percent;
-                if (progress.Percent >= 1f)
-                {
-                    this.signalBus.Unsubscribe<T>(UpdateProgress);
-                }
-            }
         }
     }
 }

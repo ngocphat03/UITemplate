@@ -1,5 +1,6 @@
 namespace AXitUnityTemplate.Utilities
 {
+#if ZENJECT
     using System;
     using Zenject;
     using System.Linq;
@@ -86,4 +87,5 @@ namespace AXitUnityTemplate.Utilities
             return ZenjectUtils.currentSceneContext.Container;
         }
     }
+#endif
 }

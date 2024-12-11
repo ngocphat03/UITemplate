@@ -6,3 +6,7 @@
 	path = MVP
 	url = git@github.com:ngocphat03/AXitMVP.git
 	branch = release
+[submodule "Analytics"]
+	path = Analytics
+	url = git@github.com:ngocphat03/AXitAnalytics.git
+	branch = release

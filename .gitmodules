@@ -1,0 +1,4 @@
+[submodule "MVC"]
+	path = MVC
+	url = git@github.com:ngocphat03/AXitMVC.git
+	branch = release

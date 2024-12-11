@@ -10,3 +10,7 @@
 	path = Analytics
 	url = git@github.com:ngocphat03/AXitAnalytics.git
 	branch = release
+[submodule "AssetLoader"]
+	path = AssetLoader
+	url = git@github.com:ngocphat03/AXitAssetLoader.git
+	branch = release

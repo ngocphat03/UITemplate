@@ -2,3 +2,7 @@
 	path = MVC
 	url = git@github.com:ngocphat03/AXitMVC.git
 	branch = release
+[submodule "MVP"]
+	path = MVP
+	url = git@github.com:ngocphat03/AXitMVP.git
+	branch = release

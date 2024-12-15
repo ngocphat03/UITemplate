@@ -14,3 +14,7 @@
 	path = AssetLoader
 	url = git@github.com:ngocphat03/AXitAssetLoader.git
 	branch = release
+[submodule "UI"]
+	path = UI
+	url = git@github.com:ngocphat03/AXitUI.git
+	branch = release

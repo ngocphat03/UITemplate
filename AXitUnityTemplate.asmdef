@@ -1,0 +1,19 @@
+{
+    "name": "AXitUnityTemplate",
+    "rootNamespace": "",
+    "references": [
+        "GUID:4ca6c0c037713894688e8b5731279a80",
+        "GUID:76a379a99ce701f489ac7753249f65dd",
+        "GUID:905c8aad6ceea8c4ca53db717692c444",
+        "GUID:ae88f0371585148f7a53149c33fc2f86"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

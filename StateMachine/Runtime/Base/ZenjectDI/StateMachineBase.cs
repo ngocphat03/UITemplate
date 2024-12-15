@@ -13,7 +13,6 @@ namespace AXitUnityTemplate.StateMachine.Runtime.Base.ZenjectDI
         
         public IState CurrentState { get; private set; }
         
-
         public virtual void Initialize(List<IState> listState)
         {
             this.TypeToState = listState.ToDictionary(state => state.GetType(), state => state);

@@ -18,3 +18,7 @@
 	path = UI
 	url = git@github.com:ngocphat03/AXitUI.git
 	branch = release
+[submodule "TransitionScene"]
+	path = TransitionScene
+	url = git@github.com:ngocphat03/AXitTransitionScene.git
+	branch = release

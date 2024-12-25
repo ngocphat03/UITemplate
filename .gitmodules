@@ -22,3 +22,7 @@
 	path = TransitionScene
 	url = git@github.com:ngocphat03/AXitTransitionScene.git
 	branch = release
+[submodule "ObjectPool"]
+	path = ObjectPool
+	url = https://github.com/ngocphat03/AXitObjectPool.git
+	branch = release
